@@ -1,0 +1,69 @@
+<%- include('includes/start.ejs') %>
+
+<title>All Members</title>
+<style>
+  .blue {
+    border-color: #04b4d5;
+    border-width: 3px;
+  }
+</style>
+</head>
+
+<%- include('includes/header.ejs') %>
+
+<main style="width: device-width">
+  <table style="width: 100%">
+    <tbody style="width: 100%">
+      <tr>
+        <%- include('includes/side-bar.ejs') %>
+        <td class="sticky-top" style="top: 88.4px; background-color: white">
+          <form class="form-inline my-2 my-lg-0" method="get" action="/members?search=searchField">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchField"
+              aria-label="Search" style="width: 85%">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+              style="width: 10%; padding: auto">Search</button>
+          </form>
+        </td>
+      </tr>
+      <tr>
+        <% if(count==0){ %>
+        <td>
+          <h3 style="text-align: center">NO MEMBERS EXIST</h3>
+          <div class="card" style="width: 286px; height:406px;border-width: 3px">
+            <img src="/images/People-512.png" class="card-img-top" alt="add-new member"
+              style="width: 278px; height: 300px; margin-top: 20px ">
+            <!-- <div class="card-body" style="text-align: center">
+              
+            </div> -->
+            <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Team</a>
+          </div>
+        </td>
+        <% } %>
+        <% if(count>0){ %>
+        <td style="display: grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); grid-gap: 20px">
+          <% for (let mem of member) { %>
+          <div class="card <%= mem.teamHead == 'Yes' ? 'blue' : ' ' %>"
+            style="width: 286px; height:406px; border-width: 3px">
+            <img src="/<%= mem.imageUrl %>" class="card-img-top" alt="member's image"
+              style="width: 278px; height: 189px">
+            <div class="card-body" style="text-align: center">
+              <h5 class="card-title"><%= mem.firstName %> <%= mem.lastName %></h5>
+              <h6 class="card-title"><%= mem.jobTitle %></h6>
+              <p class="card-text"><%= mem.jobDesc %></p>
+            </div>
+            <a href="/members/<%= mem._id %>" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">All
+              Details</a>
+          </div>
+          <% } %>
+          <div class="card" style="width: 286px; height:406px; border-width: 3px">
+            <img src="/images/People-512.png" class="card-img-top" alt="add-new member"
+              style="width: 278px; height: 300px; margin-top: 20px ">
+            <a href="/add-member" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Member</a>
+          </div>
+        </td>
+        <% } %>
+      </tr>
+    </tbody>
+  </table>
+</main>
+<%- include('includes/end.ejs') %>
