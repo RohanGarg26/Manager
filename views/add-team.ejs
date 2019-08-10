@@ -16,7 +16,7 @@
       </tr>
       <tr>
         <td>
-          <form style="padding: 20px" action="/teams" method="POST" enctype="multipart/form-data">
+          <form style="padding: 20px" action="/<%= cId %>/teams" method="POST" enctype="multipart/form-data">
             <div class="form-group">
               <label for="team">Team Name</label>
               <input type="text" class="form-control" id="team" name="team" placeholder="Enter Team Name">
@@ -30,7 +30,6 @@
               <label class="custom-file-label" for="image">Choose Image</label>
               <input type="file" class="custom-file-input" id="image" name="image">
             </div>
-            <input type="text" name="companyId" hidden value="1">
             <button type="submit" class="btn btn-primary"
               style="margin-top: 15px; align-items: center; text-align: center">Submit</button>
           </form>

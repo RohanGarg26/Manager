@@ -16,7 +16,7 @@
       </tr>
       <tr>
         <td>
-          <form style="padding: 20px" action="/members" method="POST" enctype="multipart/form-data">
+          <form style="padding: 20px" action="/<%= cId %>/members" method="POST" enctype="multipart/form-data">
             <div class="form-group">
               <label for="firstName">First Name</label>
               <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name">
@@ -56,7 +56,7 @@
             <div class="form-group">
               <label class="my-1 mr-2" for="team">Team</label>
               <select class="custom-select my-1 mr-sm-2" id="team" name="team">
-                <option selected value='None'>Choose a Team</option>
+                <option selected value='Team Not Assigned'>Choose a Team</option>
                 <% for(let t of team){ %>
                 <option><%= t.team %></option>
                 <% } %>
@@ -73,7 +73,6 @@
               <label class="custom-file-label" for="Image">Choose Image</label>
               <input type="file" class="custom-file-input" id="image" name="image">
             </div>
-            <input type="text" name="companyId" hidden value="1">
             <button type="submit" class="btn btn-primary"
               style="margin-top: 15px; align-items: center; text-align: center">Submit</button>
           </form>

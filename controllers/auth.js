@@ -15,7 +15,19 @@ const transporter = nodemailer.createTransport(sgTransport({
 
 //login-auth
 exports.loginAuth = (req, res, next) => {
-  res.redirect('/teams')
+  Company.findOne({ email: req.body.email })
+    .then(company => {
+      return Promise.all([bcrypt.compare(req.body.pass,company.password),company])
+    })
+    .then(([match,company]) => {
+      if(match){
+      const q = encodeURIComponent(company._id)
+      res.redirect(q + '/teams')
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }
 
 exports.login = (req, res, next) => {
@@ -23,14 +35,16 @@ exports.login = (req, res, next) => {
     const pass = password.randomPassword({ length: 10, characters: [password.lower, password.upper, password.digits, password.symbols] })
     bcrypt.hash(pass, 12)
       .then(hashedPass => {
-        new Company({
+        return new Company({
           name: req.body.name,
           address: req.body.address,
           compDesc: req.body.compDesc,
           email: req.body.email,
           password: hashedPass
-        })
-        transporter.sendMail({
+        }).save()
+      })
+      .then(company => {
+        return transporter.sendMail({
           to: 'garg.rohan26@gmail.com',
           from: 'Manager',
           subject: 'Welcome to the Manager',
@@ -49,9 +63,13 @@ exports.login = (req, res, next) => {
             `
         })
       })
+      .catch(err => {
+        console.log(err)
+      })
   }
   res.render('login')
 }
+
 
 exports.getSignUpForm = (req, res, next) => {
   res.render('signup')

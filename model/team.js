@@ -14,7 +14,7 @@ const teamSchema = new mongoose.Schema({
     required: true
   },
   companyId: {
-    type: String,
+    type:  mongoose.ObjectId,
     required: true,
   }
 })

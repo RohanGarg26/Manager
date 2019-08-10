@@ -43,7 +43,7 @@ app.use((req, res, next) => {
 
 //middlewares for pages 
 app.use(authRoutes.routes)
-app.use('/:compId', adminRoutes.routes)
+app.use(adminRoutes.routes)
 app.use(publicRoutes.routes)
 
 //connecting to mongoose database

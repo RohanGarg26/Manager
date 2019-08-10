@@ -1,16 +1,20 @@
+const mongoose = require('mongoose')
 const Member = require('../model/member')
 const Team = require('../model/team')
-
-
 
 //members
 exports.getPostMember = (req, res, next) => {
   if (req.method == "POST") { //if request is post i.e. user has addaed new member
     const image = req.file
-    Team.find({ team: req.body.team })  //finding the teams to be displayed in the views for selection
+    Team.findOne({
+      $and: [
+        { team: req.body.team },
+        { companyId: req.params.compId }
+      ]
+    })  //finding the teams to be displayed in the views for selection
       .then(team => {
-        if (req.body.team != 'None') {  //if a team was selected in the form
-          new Member({  //creating a new document with details added by the user in the forn
+        if (req.body.team != 'Team Not Assigned') {  //if a team was selected in the form
+          return new Member({  //creating a new document with details added by the user in the forn
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             dob: req.body.dob,
@@ -20,13 +24,13 @@ exports.getPostMember = (req, res, next) => {
             jobTitle: req.body.jobTitle,
             jobDesc: req.body.jobDesc,
             team: req.body.team,
-            companyId: req.body.companyId,
-            teamId: (team[0]._id),
+            companyId: req.params.compId,
+            teamId: team._id,
             teamHead: req.body.teamHead
           }, { versionKey: false }).save()
         }
         else {  //if a team was not selected in the form
-          new Member({
+          return new Member({
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             dob: req.body.dob,
@@ -36,8 +40,8 @@ exports.getPostMember = (req, res, next) => {
             jobTitle: req.body.jobTitle,
             jobDesc: req.body.jobDesc,
             team: req.body.team,
-            companyId: req.body.companyId,
-            teamId: null,
+            companyId: req.params.compId,
+            teamId: new mongoose.Types.ObjectId('000000000000000000000000'),
             teamHead: req.body.teamHead
           }, { versionKey: false }).save()
         }
@@ -50,27 +54,37 @@ exports.getPostMember = (req, res, next) => {
     const search = req.query.searchField
     const firstN = search.split(' ')[0]
     const lastN = search.split(' ')[1]
-    Member.find({
-      $or: [{ firstName: search },
-      { lastName: search },
-      { jobTitle: search },
-      { team: search },
-      { $and: [{ firstName: firstN }, { lastName: lastN }] }]
-    }).countDocuments() //counting the documents to display the cards in the template 
+    Member.countDocuments({
+      $and: [
+        {
+          $or: [{ firstName: search },
+          { lastName: search },
+          { jobTitle: search },
+          { team: search },
+          { $and: [{ firstName: firstN }, { lastName: lastN }] }]
+        },
+        { companyId: req.params.compId }
+      ]
+    }) //counting the documents to display the cards in the template 
       .then(count => {
         if (count == 0) {
-          res.render('disp-all-members', { count: count, path: '/members' })
+          res.render('disp-all-members', { count: count, path: '/' + encodeURIComponent(req.params.compId) + '/members', cId: req.params.compId })
         }
         else {
           Member.find({
-            $or: [{ firstName: search },
-            { lastName: search },
-            { jobTitle: search },
-            { team: search },
-            { $and: [{ firstName: firstN }, { lastName: lastN }] }]
+            $and: [
+              {
+                $or: [{ firstName: search },
+                { lastName: search },
+                { jobTitle: search },
+                { team: search },
+                { $and: [{ firstName: firstN }, { lastName: lastN }] }]
+              },
+              { companyId: req.params.compId }
+            ]
           })
             .then(member => {
-              res.render('disp-all-members', { count: count, member: member, path: '/members' })
+              res.render('disp-all-members', { count: count, member: member, path: '/' + encodeURIComponent(req.params.compId) + '/members', cId: req.params.compId })
             })
             .catch(err => {
               console.log(err)
@@ -82,15 +96,15 @@ exports.getPostMember = (req, res, next) => {
       })
   }
   else {  //if either a get request is made or a new member has been added
-    Member.find().countDocuments()
+    Member.countDocuments({ companyId: req.params.compId })
       .then(count => {
         if (count == 0) {
-          res.render('disp-all-members', { count: count, path: '/members' })
+          res.render('disp-all-members', { count: count, path: '/' + encodeURIComponent(req.params.compId) + '/members', cId: req.params.compId })
         }
         else {
-          Member.find()
+          Member.find({ companyId: req.params.compId })
             .then(member => {
-              res.render('disp-all-members', { count: count, member: member, path: '/members' })
+              res.render('disp-all-members', { count: count, member: member, path: '/' + encodeURIComponent(req.params.compId) + '/members', cId: req.params.compId })
             })
         }
       })
@@ -104,27 +118,29 @@ exports.getPostMember = (req, res, next) => {
 exports.getAddMember = (req, res, next) => {
   Team.find() //finding teams that exist so that they can be selected in the form
     .then(team => {
-      res.render('add-member', { team: team, path: ' ' })
+      res.render('add-member', { team: team, path: ' ', cId: req.params.compId })
     })
 }
 
 //member details
 exports.getMemberDetails = (req, res, next) => {
-  Member.find({ _id: req.params.memberId })
+  Member.findOne({
+    $and: [
+      { _id: req.params.memberId },
+      { companyId: req.params.compId }
+    ]
+  })
     .then(member => {
-      Member.aggregate([  //to get the date from the db in the desired format
+      return Promise.all([Member.aggregate([  //to get the date from the db in the desired format
         {
           $project: {
             dob: { $dateToString: { format: "%Y-%m-%d", date: "$dob" } }
           }
         }
-      ])
-        .then(d => {
-          res.render('member-detail', { member: member[0], dob: d[0].dob })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      ]), member])
+    })
+    .then(([d, member]) => {
+      res.render('member-detail', { member: member, dob: d[0].dob, cId: req.params.compId })
     })
     .catch(err => {
       console.log(err)
@@ -139,22 +155,32 @@ exports.getPostTeam = (req, res, next) => {
       team: req.body.team,
       teamDesc: req.body.teamDesc,
       imageUrl: image.path,
-      companyId: req.body.companyId,
+      companyId: req.params.compId,
       teamId: req.body.teamId
     }, { versionKey: false })
       .save()
   }
   if (req.query.searchField) {  //if a request is made using the search bar by the user
     const search = req.query.searchField
-    Team.find({ team: search }).countDocuments()
+    Team.find({
+      $and: [
+        { team: search },
+        { companyId: req.params.compId }
+      ]
+    }).countDocuments()
       .then(count => {
         if (count == 0) {
-          res.render('disp-all-teams', { count: count, path: '/teams' })
+          res.render('disp-all-teams', { count: count, path: '/' + encodeURIComponent(req.params.compId) + '/teams', cId: req.params.compId })
         }
         else {
-          Team.find({ team: search })
+          Team.find({
+            $and: [
+              { team: search },
+              { companyId: req.params.compId }
+            ]
+          })
             .then(team => {
-              res.render('disp-all-teams', { count: count, team: team, path: '/teams' })
+              res.render('disp-all-teams', { count: count, team: team, path: '/' + encodeURIComponent(req.params.compId) + '/teams', cId: req.params.compId })
             })
             .catch(err => {
               console.log(err)
@@ -166,15 +192,15 @@ exports.getPostTeam = (req, res, next) => {
       })
   }
   else {  //if either a get request is made or new team is added
-    Team.find().estimatedDocumentCount()
+    Team.countDocuments({ companyId: req.params.compId })
       .then(count => {
         if (count == 0) {
-          res.render('disp-all-teams', { count: count, path: '/teams' })
+          res.render('disp-all-teams', { count: count, path: '/' + encodeURIComponent(req.params.compId) + '/teams', cId: req.params.compId })
         }
         else {
-          Team.find()
+          Team.find({ companyId: req.params.compId })
             .then(team => {
-              res.render('disp-all-teams', { count: count, team: team, path: '/teams' })
+              res.render('disp-all-teams', { count: count, team: team, path: '/' + encodeURIComponent(req.params.compId) + '/teams', cId: req.params.compId })
             })
             .catch(err => {
               console.log(err)
@@ -189,16 +215,26 @@ exports.getPostTeam = (req, res, next) => {
 
 //team-details
 exports.getTeamDetails = (req, res, next) => {
-  Member.find().countDocuments({ teamId: req.params.teamId })
+  Member.countDocuments({
+    $and: [
+      { teamId: req.params.teamId },
+      { companyId: req.params.compId }
+    ]
+  })
     .then(count => {
       if (count == 0) {
-        res.render('disp-all-members', { count: count, path: '/members' })
+        res.render('disp-all-members', { count: count, path: '/' + encodeURIComponent(req.params.compId) + '/members', cId: req.params.compId })
       }
       else if (count > 0) {
-        Member.find({ teamId: req.params.teamId })
+        Member.find({
+          $and: [
+            { teamId: req.params.teamId },
+            { companyId: req.params.compId }
+          ]
+        })
           .then(member => {
 
-            res.render('disp-all-members', { count: count, member: member, path: '/members' })
+            res.render('disp-all-members', { count: count, member: member, path: '/' + encodeURIComponent(req.params.compId) + '/members', cId: req.params.compId })
           })
       }
     })
@@ -209,5 +245,5 @@ exports.getTeamDetails = (req, res, next) => {
 
 //add-team
 exports.getAddTeam = (req, res, next) => {
-  res.render('add-team', { path: ' ' })
+  res.render('add-team', { path: ' ', cId: req.params.compId })
 }

@@ -37,7 +37,7 @@ const memberSchema = new mongoose.Schema({
     type: String
   },
   companyId: {
-    type: String,
+    type:  mongoose.ObjectId,
     required: true
   },
   teamId: {

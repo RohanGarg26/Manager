@@ -13,7 +13,7 @@
 
 
         <td class="sticky-top" style="top: 88.4px; background-color: white">
-          <form class="form-inline my-2 my-lg-0" method="get" action="/teams?search=searchField">
+          <form class="form-inline my-2 my-lg-0" method="get" action="/<%= cId %>/teams?search=searchField">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchField"
               aria-label="Search" style="width: 85%">
             <button class="btn btn-outline-success my-2 my-sm-0" id="search" type="submit"
@@ -31,7 +31,7 @@
               style="width: 278px; height: 300px; margin-top: 20px">
             <!-- <div class="card-body" style="text-align: center">
             </div> -->
-            <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Team</a>
+            <a href="/<%= cId %>/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Team</a>
           </div>
         </td>
         <% } %>
@@ -45,7 +45,7 @@
               <p class="card-text"><%= t.teamDesc %></p>
               
             </div>
-            <a href="/teams/<%= t._id %>" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">View All Team Members</a>
+            <a href="/<%= cId %>/teams/<%= t._id %>" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">View All Team Members</a>
           </div>
           <% } %>
           <div class="card" style="width: 280px; height:400px;">
@@ -53,7 +53,7 @@
               style="width: 278px; height: 300px; margin-top: 20px">
             <!-- <div class="card-body" style="text-align: center; ">
             </div> -->
-            <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Team</a>
+            <a href="/<%= cId %>/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Team</a>
           </div>
         </td>
         <% } %>
