@@ -12,23 +12,29 @@
         <%- include('includes/side-bar.ejs') %>
         <td style="text-align: center; padding-top: 15px">
           <% if(edit === 'false'){ %>
-            <h2>ADD NEW MEMBER</h2>
+          <h2>ADD NEW MEMBER</h2>
           <% } %>
           <% if(edit === 'true'){ %>
-            <h2>EDIT MEMBER DETAILS</h2>
+          <h2>EDIT MEMBER DETAILS</h2>
           <% } %>
         </td>
-      </tr>  
+      </tr>
       <tr>
         <td>
-          <form style="padding: 20px" action="<%= edit ==='true'?'/' + cId + '/member/edit-member':'/' + cId + '/add-member'%>" method="POST" enctype="multipart/form-data">
+          <form style="padding: 20px"
+            action="<%= edit ==='true'?'/' + cId + '/member/edit-member':'/' + cId + '/add-member'%>" method="POST"
+            enctype="multipart/form-data">
             <div class="form-group">
               <label for="firstName">First Name</label>
-              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="<%= edit === 'true'?member.firstName:'Enter First Name' %>" value="<%= edit === 'true'?member.firstName:'' %>">
+              <input type="text" class="form-control" id="firstName" name="firstName"
+                placeholder="<%= edit === 'true'?member.firstName:'Enter First Name' %>"
+                value="<%= edit === 'true'?member.firstName:'' %>">
             </div>
             <div class="form-group">
               <label for="lastName">Last Name</label>
-              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="<%= edit === 'true'?member.lastName:'Enter Last Name' %>" value="<%= edit === 'true'?member.lastName:'' %>">
+              <input type="text" class="form-control" id="lastName" name="lastName"
+                placeholder="<%= edit === 'true'?member.lastName:'Enter Last Name' %>"
+                value="<%= edit === 'true'?member.lastName:'' %>">
             </div>
             <div class="form-group">
               <label for="dob">Date of Birth</label>
@@ -39,7 +45,8 @@
             </div>
             <div class="form-group">
               <label for="address">Address</label>
-              <input type="text" class="form-control" id="address" name="address" placeholder="<%= edit === 'true'?member.address:'Enter permanent address' %>"
+              <input type="text" class="form-control" id="address" name="address"
+                placeholder="<%= edit === 'true'?member.address:'Enter permanent address' %>"
                 aria-describedby="addressHelp" value="<%= edit === 'true'?member.address:'' %>">
               <small id="addressHelp" class="form-text text-muted">We'll never share your address with anyone
                 else.</small>
@@ -47,50 +54,54 @@
             <div class="form-group">
               <label for="emailId">Email address</label>
               <input type="email" class="form-control" id="emailId" name="emailId" aria-describedby="emailHelp"
-                placeholder="<%= edit === 'true'?member.emailId:'Enter Email Address' %>" value="<%= edit === 'true'?member.emailId:'' %>">
+                placeholder="<%= edit === 'true'?member.emailId:'Enter Email Address' %>"
+                value="<%= edit === 'true'?member.emailId:'' %>">
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
               <label for="jobTitle">Job Title</label>
-              <input type="text" class="form-control" id="jobTitle" name="jobTitle" placeholder="<%= edit === 'true'?member.jobTitle:'Enter Job Title' %>" value="<%= edit === 'true'?member.jobTitle:'' %>">
+              <input type="text" class="form-control" id="jobTitle" name="jobTitle"
+                placeholder="<%= edit === 'true'?member.jobTitle:'Enter Job Title' %>"
+                value="<%= edit === 'true'?member.jobTitle:'' %>">
             </div>
             <div class="form-group">
               <label for="jobDesc">Job Description</label>
-              <textarea class="form-control" id="jobDesc" maxlength="200" name="jobDesc" rows="5"><%= edit === 'true'?member.jobDesc:'' %></textarea>
+              <textarea class="form-control" id="jobDesc" maxlength="200" name="jobDesc"
+                rows="5"><%= edit === 'true'?member.jobDesc:'' %></textarea>
             </div>
             <div class="form-group">
               <label class="my-1 mr-2" for="team">Team</label>
               <select class="custom-select my-1 mr-sm-2" id="team" name="team">
-                  <% if(edit === 'false'){ %>
+                <% if(edit === 'false'){ %>
                 <option selected value='Team Not Assigned'>Choose a Team</option>
                 <% for(let t of team){ %>
                 <option><%= t.team %></option>
                 <% } %>
                 <% } %>
                 <% if(edit === 'true'){ %>
-                  <option selected><%= member.team %></option>
-                  <option value='Team Not Assigned'>Choose a Team</option>
-                  <% for(let t of team){ %>
-                  <option><%= t.team %></option>
-                  <% } %>
+                <option selected><%= member.team %></option>
+                <option value='Team Not Assigned'>Choose a Team</option>
+                <% for(let t of team){ %>
+                <option><%= t.team %></option>
+                <% } %>
                 <% } %>
               </select>
             </div>
             <div class="form-group">
               <label class="my-1 mr-2" for="teamHead">Team Head</label>
               <select class="custom-select my-1 mr-sm-2" id="teamHead" name="teamHead">
-                  <% if(edit === 'false'){ %>
+                <% if(edit === 'false'){ %>
                 <option selected value='No'>No</option>
                 <option value="Yes">Yes</option>
                 <% } %>
                 <% if(edit === 'true'){ %>
-                  <option selected><%= member.teamHead %></option>
-                  <% if(member.teamHead == 'No'){ %>
-                  <option value="Yes">Yes</option>
-                  <% } %>
-                  <% if(member.teamHead == 'Yes'){ %>
-                    <option value="No">No</option>
-                    <% } %>
+                <option selected><%= member.teamHead %></option>
+                <% if(member.teamHead == 'No'){ %>
+                <option value="Yes">Yes</option>
+                <% } %>
+                <% if(member.teamHead == 'Yes'){ %>
+                <option value="No">No</option>
+                <% } %>
                 <% } %>
               </select>
             </div>
@@ -100,13 +111,15 @@
             </div>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <% if(edit === 'true'){ %>
-              <input type="hidden" name="memberId" value="<%= member._id %>">
+            <input type="hidden" name="memberId" value="<%= member._id %>">
             <% } %>
             <div>
-            <a class="btn btn-primary" href="/<%= cId %>/members/<%= member._id %>" role="button"
-              style="margin-top: 15px;  text-align: center">Return</a>
-            <button type="submit" class="btn btn-primary"
-              style="margin-top: 15px; align-items: center; text-align: center">Submit</button>
+              <% if(edit === 'true'){ %>
+              <a class="btn btn-primary" href="/<%= cId %>/members/<%= member._id %>" role="button"
+                style="margin-top: 15px;  text-align: center">Return</a>
+              <% } %>
+              <button type="submit" class="btn btn-primary"
+                style="margin-top: 15px; align-items: center; text-align: center">Submit</button>
             </div>
           </form>
         </td>

@@ -353,7 +353,7 @@ exports.getEditMember = (req, res, next) => {
       return Promise.all([Member.findOne({ _id: req.params.memberId }), team])
     })
     .then(([member, team]) => {
-      res.render('add-member', { team: team, path: ' ', cId: req.params.compId, edit: 'true', member: member })
+      res.render('add-member', { team: team, path: ' ', cId: req.params.compId, edit: 'true', member: member, date: date })
     })
     .catch(err => {
       console.log(err)
@@ -362,11 +362,18 @@ exports.getEditMember = (req, res, next) => {
 
 exports.postEditMember = (req, res, next) => {
   const image = req.file
+  let img
+  if (image) {
+    img = image.path
+  }
+  else {
+    img = String(null)
+  }
   if (req.body.team != 'Team Not Assigned') {
     Member.findById(req.body.memberId)
       .then(member => {
-        if (image) {
-          fs.unlink(member.imageUrl, (err) => {
+        if (image && member.imageUrl != null) {
+          fs.unlink(String(member.imageUrl), (err) => {
             console.log(err)
           })
         }
@@ -388,7 +395,7 @@ exports.postEditMember = (req, res, next) => {
             dob: req.body.dob,
             address: req.body.address,
             emailId: req.body.emailId,
-            imageUrl: image.path,
+            imageUrl: img,
             jobTitle: req.body.jobTitle,
             jobDesc: req.body.jobDesc,
             team: req.body.team,
@@ -407,8 +414,8 @@ exports.postEditMember = (req, res, next) => {
   else {
     Member.findById(req.body.memberId)
       .then(member => {
-        if (image) {
-          fs.unlink(member.imageUrl, (err) => {
+        if (image && member.imageUrl != null) {
+          fs.unlink(String(member.imageUrl), (err) => {
             console.log(err)
           })
         }
@@ -422,7 +429,7 @@ exports.postEditMember = (req, res, next) => {
             dob: req.body.dob,
             address: req.body.address,
             emailId: req.body.emailId,
-            imageUrl: image.path,
+            imageUrl: img,
             jobTitle: req.body.jobTitle,
             jobDesc: req.body.jobDesc,
             team: req.body.team,
