@@ -6,8 +6,7 @@ const teamSchema = new mongoose.Schema({
     required: true
   },
   imageUrl: {
-    type: String,
-    required: true
+    type: String
   },
   teamDesc: {
     type: String,

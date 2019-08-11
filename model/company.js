@@ -16,10 +16,16 @@ const companySchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    indexes: {
+      unique: true
+    }
   },
   password: {
     type: String,
-    require: true
+    require: true,
+    indexes: {
+      unique: true
+    }
   }
 })
 

@@ -19,11 +19,13 @@ const memberSchema = new mongoose.Schema({
   },
   emailId: {
     type: String,
-    required: true
+    required: true,
+    indexes: {
+      unique: true
+    }
   },
   imageUrl: {
-    type: String,
-    required: true
+    type: String
   },
   jobTitle: {
     type: String,
@@ -46,7 +48,13 @@ const memberSchema = new mongoose.Schema({
   },
   teamHead:{
     type: String,
-    required: true
+  },
+  password:{
+    type: String,
+    required: true,
+    indexes: {
+      unique: true
+    }
   }
 })
 

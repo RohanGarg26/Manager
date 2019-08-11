@@ -17,17 +17,28 @@ const transporter = nodemailer.createTransport(sgTransport({
 exports.loginAuth = (req, res, next) => {
   Company.findOne({ email: req.body.email })
     .then(company => {
-      return Promise.all([bcrypt.compare(req.body.pass,company.password),company])
+      return Promise.all([bcrypt.compare(req.body.pass, company.password), company])
     })
-    .then(([match,company]) => {
-      if(match){
+    .then(([match, company]) => {
+      if (match) {
+        req.session.DMisLoggedIn = true;
+        return Promise.all([req.session.save(),company])
+      }
+    })
+    .then(([session,company]) => {
       const q = encodeURIComponent(company._id)
       res.redirect(q + '/teams')
-      }
     })
     .catch(err => {
       console.log(err)
     })
+}
+
+exports.logout = (req,res,next) => {
+  req.session.destroy(err => {
+    //console.log(err)
+    res.redirect('/login')
+  })
 }
 
 exports.login = (req, res, next) => {

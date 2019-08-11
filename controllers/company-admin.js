@@ -1,18 +1,34 @@
 const mongoose = require('mongoose')
+const nodemailer = require('nodemailer')
+const sgTransport = require('nodemailer-sendgrid-transport')
+const bcrypt = require('bcryptjs')
+const password = require('secure-random-password')
+const fs = require('fs')
+
 const Member = require('../model/member')
 const Team = require('../model/team')
+
+const transporter = nodemailer.createTransport(sgTransport({
+  auth: {
+    api_key: `${process.env.sgKey}`
+  }
+}))
 
 //members
 exports.getPostMember = (req, res, next) => {
   if (req.method == "POST") { //if request is post i.e. user has addaed new member
-    const image = req.file
-    Team.findOne({
-      $and: [
-        { team: req.body.team },
-        { companyId: req.params.compId }
-      ]
-    })  //finding the teams to be displayed in the views for selection
-      .then(team => {
+    const pass = password.randomPassword({ length: 10, characters: [password.lower, password.upper, password.digits, password.symbols] })
+    bcrypt.hash(pass, 12)
+      .then(hashedPass => {
+        return Promise.all([Team.findOne({
+          $and: [
+            { team: req.body.team },
+            { companyId: req.params.compId }
+          ]
+        }), hashedPass])  //finding the teams to be displayed in the views for selection
+      })
+      .then(([team, hashedPass]) => {
+        const image = req.file
         if (req.body.team != 'Team Not Assigned') {  //if a team was selected in the form
           return new Member({  //creating a new document with details added by the user in the forn
             firstName: req.body.firstName,
@@ -26,7 +42,8 @@ exports.getPostMember = (req, res, next) => {
             team: req.body.team,
             companyId: req.params.compId,
             teamId: team._id,
-            teamHead: req.body.teamHead
+            teamHead: req.body.teamHead,
+            password: hashedPass
           }, { versionKey: false }).save()
         }
         else {  //if a team was not selected in the form
@@ -42,9 +59,30 @@ exports.getPostMember = (req, res, next) => {
             team: req.body.team,
             companyId: req.params.compId,
             teamId: new mongoose.Types.ObjectId('000000000000000000000000'),
-            teamHead: req.body.teamHead
+            teamHead: req.body.teamHead,
+            password: hashedPass
           }, { versionKey: false }).save()
         }
+      })
+      .then(member => {
+        return transporter.sendMail({
+          to: 'garg.rohan26@gmail.com',
+          from: 'Manager',
+          subject: 'Welcome to the Manager',
+          html: `
+            <body>
+            <p>Hello ${ req.body.firstName}</p>
+            <p>You've been added to Manager by your company</p>
+            <p>
+              Your login credentials are: <br>
+              Email: ${ req.body.emailId} <br>
+              Password: ${ pass} <br>
+                 <small>Store your credentials in a safe place.</small>
+            </p>
+            <p>Have a great experience!!!</p>
+            </body>
+            `
+        })
       })
       .catch(err => {
         console.log(err)
@@ -246,4 +284,43 @@ exports.getTeamDetails = (req, res, next) => {
 //add-team
 exports.getAddTeam = (req, res, next) => {
   res.render('add-team', { path: ' ', cId: req.params.compId })
+}
+
+//delete-member
+exports.deleteMem = (req, res, next) => {
+  Member.deleteOne({ _id: req.params.memberId })
+    .then(() => {
+      res.redirect('/' + encodeURIComponent(req.params.compId) + '/members')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+//delete-team
+exports.deleteTeam = (req, res, next) => {
+  Member.find({ teamId: req.params.teamId })
+    .then(member => {
+      for (let m of member) {
+        fs.unlink(m.imageUrl, (err) => {
+          console.log(err)
+        })
+      }
+      return Member.deleteMany({ teamId: req.params.teamId })
+    })
+    .then(() => {
+      return Team.findOne({ _id: req.params.teamId })
+    })
+    .then(team => {
+      fs.unlink(team.imageUrl, (err) => {
+        console.log(err)
+      })
+      return Team.deleteOne({ _id: req.params.teamId })
+    })
+    .then(() => {
+      res.redirect('/' + encodeURIComponent(req.params.compId) + '/teams')
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }

@@ -1,5 +1,4 @@
 <%- include('includes/start.ejs') %>
-
 <title>All Members</title>
 <style>
   .blue {
@@ -20,6 +19,7 @@
           <form class="form-inline my-2 my-lg-0" method="get" action="/<%= cId %>/members?search=searchField">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchField"
               aria-label="Search" style="width: 85%">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
               style="width: 10%; padding: auto">Search</button>
           </form>
@@ -32,7 +32,8 @@
           <div class="card" style="width: 286px; height:406px; border-width: 3px">
             <img src="/images/logo-contact-person-png.png" class="card-img-top" alt="add-new member"
               style="width: 280px; height: 300px; margin-top: 20px ">
-            <a href="/<%= cId %>/add-member" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Member</a>
+            <a href="/<%= cId %>/add-member" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
+              Member</a>
           </div>
         </td>
         <% } %>
@@ -48,14 +49,22 @@
               <h6 class="card-title"><%= mem.jobTitle %></h6>
               <p class="card-text"><%= mem.jobDesc %></p>
             </div>
-            <a href="/<%= cId %>/members/<%= mem._id %>" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">All
-              Details</a>
+            <div style="margin: auto; margin-bottom: 10px;">
+              <a href="/<%= cId %>/members/<%= mem._id %>" class="btn btn-primary" style="margin-right: 10px">All
+                Details</a>
+              <form method="POST" action="/<%= cId %>/member/delete/<%= mem._id %>"
+                style="padding: 0px; margin: 0px; display: inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-primary">Remove Member</button>
+              </form>
+            </div>
           </div>
           <% } %>
           <div class="card" style="width: 286px; height:406px; border-width: 3px">
             <img src="/images/logo-contact-person-png.png" class="card-img-top" alt="add-new member"
               style="width: 280px; height: 300px; margin-top: 20px ">
-            <a href="/<%= cId %>/add-member" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Member</a>
+            <a href="/<%= cId %>/add-member" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
+              Member</a>
           </div>
         </td>
         <% } %>

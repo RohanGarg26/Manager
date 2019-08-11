@@ -16,6 +16,7 @@
           <form class="form-inline my-2 my-lg-0" method="get" action="/<%= cId %>/teams?search=searchField">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchField"
               aria-label="Search" style="width: 85%">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn btn-outline-success my-2 my-sm-0" id="search" type="submit"
               style="width: 10%; padding: auto">Search</button>
           </form>
@@ -31,7 +32,8 @@
               style="width: 278px; height: 300px; margin-top: 20px">
             <!-- <div class="card-body" style="text-align: center">
             </div> -->
-            <a href="/<%= cId %>/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Team</a>
+            <a href="/<%= cId %>/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
+              Team</a>
           </div>
         </td>
         <% } %>
@@ -43,17 +45,23 @@
             <div class="card-body" style="text-align: center">
               <h5 class="card-title"><%= t.team %></h5>
               <p class="card-text"><%= t.teamDesc %></p>
-              
             </div>
-            <a href="/<%= cId %>/teams/<%= t._id %>" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">View All Team Members</a>
+            <div style="margin: auto; margin-bottom: 10px;">
+              <a href="/<%= cId %>/teams/<%= t._id %>" class="btn btn-primary" style="margin-right: 10px">Team
+                Members</a>
+              <form method="POST" action="/<%= cId %>/team/delete/<%= t._id %>"
+                style="padding: 0px; margin: 0px; display: inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-primary">Remove Team</button>
+              </form>
+            </div>
           </div>
           <% } %>
           <div class="card" style="width: 280px; height:400px;">
             <img src="/images/icon-team-blue-big.png" class="card-img-top" alt="add-new member"
               style="width: 278px; height: 300px; margin-top: 20px">
-            <!-- <div class="card-body" style="text-align: center; ">
-            </div> -->
-            <a href="/<%= cId %>/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New Team</a>
+            <a href="/<%= cId %>/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
+              Team</a>
           </div>
         </td>
         <% } %>
