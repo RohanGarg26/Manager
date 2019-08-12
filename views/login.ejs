@@ -1,0 +1,47 @@
+<%- include('includes/start.ejs') %>
+
+<title>Login</title>
+</head>
+
+<%- include('includes/header.ejs') %>
+<main>
+  <div class="d-flex">
+    <form class="flex-fill" method="POST" action="/login-auth">
+      <h2>Data Manager</h2>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter registered email">
+      </div>
+      <div class="form-group">
+        <label for="pass">Password</label>
+        <input type="password" class="form-control" id="pass" name="pass" placeholder="Password"
+          aria-describedby="passHelp">
+        <small id="passHelp" class="form-text text-muted">Hint: Check your registered email.</small>
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-primary">Submit</button>
+      <p style="margin-top: 10px"><a href="/signup">Signup</a></p>
+    </form>
+
+    <form class="flex-fill" method="">
+      <h2>Members</h2>
+      <div class="form-group">
+        <label for="company-id">Email address</label>
+        <input type="email" class="form-control" id="company-id" name="companyId" placeholder="Enter registered email">
+      </div>
+      <div class="form-group">
+        <label for="passcomp">Password</label>
+        <input type="password" class="form-control" id="passcomp" name="password" placeholder="Password"
+          aria-describedby="passHelp">
+        <small id="passHelp" class="form-text text-muted">Hint: Check your registered email.</small>
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</main>
+<footer class="fixed-bottom">
+  <div id="hr"></div>
+  <div class="head" style="max-width: none; height: 40px;">
+  </div>
+</footer>
+<%- include('includes/end.ejs') %>

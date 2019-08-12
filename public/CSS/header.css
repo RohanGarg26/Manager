@@ -1,0 +1,27 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+
+form{
+  padding:50px;
+  margin:10px;
+}
+
+.company{
+  margin: 0;
+  text-align: center;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size:xx-large;
+  color: white;
+  padding: 20px 0px 20px 0px;
+}
+
+.head{
+  background-color: #29233C;
+}
+
+#hr{
+  background-color:#5430C8; 
+  height:10px;
+}

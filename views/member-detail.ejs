@@ -1,0 +1,42 @@
+<%- include('includes/start.ejs') %>
+
+<title></title>
+</head>
+
+<%- include('includes/header.ejs') %>
+
+<main>
+  <div class="jumbotron bg-white text-dark"
+    style="text-align: center; padding-top: 15px;padding-bottom: 5px ;margin: 0px">
+    <h1 class="display-4"><%= member.firstName %> <%= member.lastName %></h1>
+    <hr class="my-4">
+    <img src="/<%= member.imageUrl %>" alt="member's image" class="img-thumbnail border-secondary"
+      style="display: block; margin: auto;width: 144px;height: 144px;">
+    <hr class="my-4">
+    <dl class="row">
+      <dt class="col-sm-3">Job Title</dt>
+      <dd class="col-sm-9"><%= member.jobTitle %></dd>
+
+      <dt class="col-sm-3">Job Description</dt>
+      <dd class="col-sm-9"><%= member.jobDesc %></dd>
+
+      <dt class="col-sm-3">Team</dt>
+      <dd class="col-sm-9"><%= member.team %></dd>
+
+      <dt class="col-sm-3 text-truncate">Email-Id</dt>
+      <dd class="col-sm-9"><%= member.emailId %></dd>
+
+      <dt class="col-sm-3 text-truncate">Address</dt>
+      <dd class="col-sm-9"><%= member.address %></dd>
+
+      <dt class="col-sm-3 text-truncate">Date of Birth</dt>
+      <dd class="col-sm-9"><%= dob %></dd>
+    </dl>
+    <div>
+      <a class="btn btn-primary btn-lg" href="/member/edit-member/<%= member._id %>" role="button"
+        style="margin-right: 10px">Edit Details</a>
+      <a class="btn btn-primary btn-lg" href="/members %>" role="button">Return</a>
+    </div>
+  </div>
+</main>
+<%- include('includes/end.ejs') %>

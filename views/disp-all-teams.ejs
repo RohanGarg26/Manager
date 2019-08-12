@@ -1,0 +1,70 @@
+<%- include('includes/start.ejs') %>
+<title>All Teams</title>
+</head>
+
+<%- include('includes/header.ejs') %>
+
+<main style="width: device-width">
+  <table style="width: 100%">
+    <tbody style="width: 100%">
+      <tr>
+
+        <%- include('includes/side-bar.ejs') %>
+
+
+        <td class="sticky-top" style="top: 88.4px; background-color: white">
+          <form class="form-inline my-2 my-lg-0" method="get" action="/teams?search=searchField">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchField"
+              aria-label="Search" style="width: 85%">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button class="btn btn-outline-success my-2 my-sm-0" id="search" type="submit"
+              style="width: 10%; padding: auto">Search</button>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <% if(count==0){ %>
+        <td>
+          <h3 style="text-align: center">NO TEAMS EXIST</h3>
+          <div class="card" style="width: 280px; height:400px;">
+            <img src="/images/icon-team-blue-big.png" class="card-img-top" alt="add-new member"
+              style="width: 278px; height: 300px; margin-top: 20px">
+            <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
+              Team</a>
+          </div>
+        </td>
+        <% } %>
+        <% if(count>0){ %>
+        <td style="display: grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); grid-gap: 20px">
+          <% for (let t of team) { %>
+          <div class="card" style="width: 280px; height:400px;">
+            <img src="/<%= t.imageUrl %>" class="card-img-top" alt="member's image" style="width: 278px; height: 189px">
+            <div class="card-body" style="text-align: center">
+              <h5 class="card-title"><%= t.team %></h5>
+              <p class="card-text"><%= t.teamDesc %></p>
+            </div>
+            <div style="margin: auto; margin-bottom: 10px;">
+              <a href="/teams/<%= t._id %>" class="btn btn-primary" style="margin-right: 10px">Team
+                Members</a>
+              <form method="POST" action="/team/delete/<%= t._id %>"
+                style="padding: 0px; margin: 0px; display: inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-primary">Remove Team</button>
+              </form>
+            </div>
+          </div>
+          <% } %>
+          <div class="card" style="width: 280px; height:400px;">
+            <img src="/images/icon-team-blue-big.png" class="card-img-top" alt="add-new member"
+              style="width: 278px; height: 300px; margin-top: 20px">
+            <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
+              Team</a>
+          </div>
+        </td>
+        <% } %>
+      </tr>
+    </tbody>
+  </table>
+</main>
+<%- include('includes/end.ejs') %>
