@@ -1,6 +1,11 @@
 <%- include('includes/start.ejs') %>
 
-<title>Add New Member</title>
+<% if(edit === 'true'){ %>
+<title>Edit Member</title>
+<% } %>
+<% if(edit === 'false'){ %>
+  <title>ADD NEW MEMBER</title>
+  <% } %>
 </head>
 
 <%- include('includes/header.ejs') %>
@@ -39,7 +44,7 @@
             <div class="form-group">
               <label for="dob">Date of Birth</label>
               <input type="date" class="form-control" id="dob" name="dob" aria-describedby="dobHelp"
-                placeholder="Select Date of Birth">
+                placeholder="Select Date of Birth" value="<%= edit === 'true'?date:'' %>">
               <small id="dobHelp" class="form-text text-muted">We'll never share your date of birth with anyone
                 else.</small>
             </div>
@@ -127,5 +132,3 @@
     </tbody>
   </table>
 </main>
-
-<%- include('includes/end.ejs') %>

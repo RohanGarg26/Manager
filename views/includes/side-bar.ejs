@@ -1,17 +1,21 @@
 <td style="width: 15%; vertical-align: top; padding-top: 15px;" rowspan="3">
   <div style="position: fixed">
     <div class="row sticky-top" style="padding-left: 15px">
-      <div class="col-3">
-        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-          <a class="nav-link btn btn-outline-primary <%= path === '/teams'? 'active' :' '%>" id="v-pills-home-tab"
+      <div class="col-3 w-100 p-3">
+        <div class="nav flex-column nav-pills w-100 p-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+          <a class="nav-link btn btn-outline-success <%= path === '/teams'? 'active' :' '%>" id="v-pills-home-tab"
             data-toggle="pill" href="/teams" role="tab" aria-controls="v-pills-home"
             aria-selected="true" style="margin-top: 4px">Teams</a>
-          <a class="nav-link btn btn-outline-primary <%= path === '/members'? 'active' :' '%>" id="v-pills-profile-tab"
+          <a class="nav-link btn btn-outline-success <%= path === '/members'? 'active' :' '%>" id="v-pills-profile-tab"
             data-toggle="pill" href="/members" role="tab" aria-controls="v-pills-profile"
             aria-selected="false" style="margin-top: 4px">Members</a>
             <form action="/logout" method="POST" style="padding: 0px;margin: 0px;">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-              <button type="submit" class="btn btn-outline-danger btn-block" style="margin-top:4px">Logout</button>
+              <button type="submit" class="btn btn-outline-warning btn-block" style="margin-top:4px">Logout</button>
+            </form>
+            <form action="/delete-account" method="POST" style="padding: 0px;margin: 0px;">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button type="submit" class="btn btn-outline-danger btn-block" style="margin-top:4px">Delete Company</button>
             </form>
         </div>
       </div>

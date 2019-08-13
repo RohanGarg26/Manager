@@ -4,9 +4,11 @@ const sgTransport = require('nodemailer-sendgrid-transport')
 const bcrypt = require('bcryptjs')
 const password = require('secure-random-password')
 const fs = require('fs')
+const path = require('path')
 
 const Member = require('../model/member')
 const Team = require('../model/team')
+const Company = require('../model/company')
 
 const transporter = nodemailer.createTransport(sgTransport({
   auth: {
@@ -14,6 +16,24 @@ const transporter = nodemailer.createTransport(sgTransport({
   }
 }))
 
+//delete account 
+exports.postDeleteAccount = (req,res,next) => {
+  Member.deleteMany({companyId: req.session.companyId})
+    .then(()=>{
+      return Team.deleteMany({companyId: req.session.companyId})
+    })
+    .then(()=>{
+      let id = new mongoose.Types.ObjectId(req.session.companyId)
+      return Company.deleteOne({_id: id})
+    })
+    .then(()=>{
+      res.redirect('/logout')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+}
+  
 
 //members
 exports.getMember = (req, res, next) => {
@@ -150,7 +170,7 @@ exports.postAddMember = (req, res, next) => {
       })
     })
     .then(() => {
-      res.redirect('/' + encodeURIComponent(req.session.companyId) + '/members')
+      res.redirect('/members')
     })
     .catch(err => {
       console.log(err)
@@ -159,7 +179,7 @@ exports.postAddMember = (req, res, next) => {
 
 //add-member
 exports.getAddMember = (req, res, next) => {
-  Team.find() //finding teams that exist so that they can be selected in the form
+  Team.find({companyId: req.session.companyId}) //finding teams that exist so that they can be selected in the form
     .then(team => {
       res.render('add-member', { team: team, path: ' ', edit: 'false' })
     })
@@ -206,7 +226,7 @@ exports.postAddTeam = (req, res, next) => {
   }, { versionKey: false })
     .save()
     .then(team => {
-      res.redirect('/' + encodeURIComponent(req.session.companyId) + '/teams')
+      res.redirect('/teams')
     })
 }
 
@@ -250,16 +270,25 @@ exports.getAddTeam = (req, res, next) => {
 
 //delete-member
 exports.deleteMem = (req, res, next) => {
-  Member.findOne({ _id: req.params.memberId })
+  Member.findOne({
+    $and: [
+      { _id: req.params.memberId},
+      { companyId: req.session.companyId }
+    ]
+  })
     .then(member => {
       fs.unlink(member.imageUrl, (err) => {
         console.log(err)
       })
-      return Member.deleteOne({ _id: req.params.memberId })
+      return Member.deleteOne({
+        $and: [
+          { _id: req.params.memberId},
+          { companyId: req.session.companyId }
+        ]
+      })
     })
-
     .then(() => {
-      res.redirect('/' + encodeURIComponent(req.session.companyId) + '/members')
+      res.redirect('/members')
     })
     .catch(err => {
       console.log(err)
@@ -269,7 +298,12 @@ exports.deleteMem = (req, res, next) => {
 //delete-team
 exports.deleteTeam = (req, res, next) => {
   Member.updateMany(
-    { teamId: req.params.teamId },
+    {
+      $and: [
+        { teamId: req.params.teamId},
+        { companyId: req.session.companyId }
+      ]
+    },
     {
       team: 'Team Not Assigned',
       teamHead: 'No',
@@ -277,16 +311,26 @@ exports.deleteTeam = (req, res, next) => {
     }
   )
     .then(() => {
-      return Team.findOne({ _id: req.params.teamId })
+      return Team.findOne({
+        $and: [
+          { _id: req.params.teamId},
+          { companyId: req.session.companyId }
+        ]
+      })
     })
     .then(team => {
       fs.unlink(team.imageUrl, (err) => {
         console.log(err)
       })
-      return Team.deleteOne({ _id: req.params.teamId })
+      return Team.deleteOne({
+        $and: [
+          { _id: req.params.teamId},
+          { companyId: req.session.companyId }
+        ]
+      })
     })
     .then(() => {
-      res.redirect('/' + encodeURIComponent(req.session.companyId) + '/teams')
+      res.redirect('/teams')
     })
     .catch(err => {
       console.log(err)
@@ -295,12 +339,26 @@ exports.deleteTeam = (req, res, next) => {
 
 //edit-member
 exports.getEditMember = (req, res, next) => {
-  Team.find() //finding teams that exist so that they can be selected in the form
+  Team.find({companyId: req.session.companyId}) //finding teams that exist so that they can be selected in the form
     .then(team => {
-      return Promise.all([Member.findOne({ _id: req.params.memberId }), team])
+      return Promise.all([Member.findOne({
+        $and: [
+          { _id: req.params.memberId},
+          { companyId: req.session.companyId }
+        ]
+      }), team])
     })
-    .then(([member, team]) => {
-      res.render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date })
+    .then(([member,team]) => {
+      return Promise.all([Member.aggregate([  //to get the date from the db in the desired format
+        {
+          $project: {
+            dob: { $dateToString: { format: "%Y-%m-%d", date: "$dob" } }
+          }
+        }
+      ]), member,team])
+    })
+    .then(([date,member, team]) => {
+      res.render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob})
     })
     .catch(err => {
       console.log(err)
@@ -352,7 +410,7 @@ exports.postEditMember = (req, res, next) => {
         )
       })
       .then(() => {
-        res.redirect('/' + encodeURIComponent(req.session.companyId) + '/members')
+        res.redirect('/members')
       })
       .catch(err => {
         console.log(err)
@@ -386,7 +444,7 @@ exports.postEditMember = (req, res, next) => {
         )
       })
       .then(() => {
-        res.redirect('/' + encodeURIComponent(req.session.companyId) + '/members')
+        res.redirect('/members')
       })
       .catch(err => {
         console.log(err)
@@ -394,9 +452,7 @@ exports.postEditMember = (req, res, next) => {
   }
 }
 
-//////////////
 //teams
-//////////////
 exports.getTeam = (req, res, next) => {
   if (req.query.searchField) {  //if a request is made using the search bar by the user
     const search = req.query.searchField

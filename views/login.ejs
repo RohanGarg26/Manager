@@ -7,15 +7,20 @@
 <main>
   <div class="d-flex">
     <form class="flex-fill" method="POST" action="/login-auth">
+      <% if (err) { %>
+        <div class="alert alert-danger" role="alert" style="margin: 0px;padding:10px;text-align: center">
+            <%= err %>
+        </div>
+      <% } %>
       <h2>Data Manager</h2>
       <div class="form-group">
         <label for="email">Email address</label>
-        <input type="email" class="form-control" id="email" name="email" placeholder="Enter registered email">
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter registered email" required>
       </div>
       <div class="form-group">
         <label for="pass">Password</label>
         <input type="password" class="form-control" id="pass" name="pass" placeholder="Password"
-          aria-describedby="passHelp">
+          aria-describedby="passHelp" required>
         <small id="passHelp" class="form-text text-muted">Hint: Check your registered email.</small>
       </div>
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">

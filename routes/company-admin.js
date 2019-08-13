@@ -19,5 +19,7 @@ router.get('/teams', authMiddleware.isAuth, adminController.getTeam)
 router.get('/add-team', authMiddleware.isAuth, adminController.getAddTeam)
 router.post('/add-team', authMiddleware.isAuth, adminController.postAddTeam)
 
+router.post('/delete-account', authMiddleware.isAuth, adminController.postDeleteAccount)
+
 
 exports.routes = router

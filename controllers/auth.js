@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer')
 const sgTransport = require('nodemailer-sendgrid-transport')
 const bcrypt = require('bcryptjs')
 const password = require('secure-random-password')
+const { validationResult } = require('express-validator')
 
 const Member = require('../model/member')
 const Team = require('../model/team')
@@ -15,6 +16,13 @@ const transporter = nodemailer.createTransport(sgTransport({
 
 //login-auth
 exports.loginAuth = (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    //console.log(errors.array())
+    return res.status(422).render('login',{
+      err: errors.array()[0].msg
+    })
+  }
   Company.findOne({ email: req.body.email })
     .then(company => {
       return Promise.all([bcrypt.compare(req.body.pass, company.password), company])
@@ -25,6 +33,11 @@ exports.loginAuth = (req, res, next) => {
         req.session.companyId = company._id;
         return req.session.save()
       }
+      else {
+        res.render('login',{
+          err: 'Invalid Password'
+        })
+      }
     })
     .then(session => {
       res.redirect('/teams')
@@ -34,32 +47,50 @@ exports.loginAuth = (req, res, next) => {
     })
 }
 
-exports.logout = (req,res,next) => {
+exports.logout = (req, res, next) => {
   req.session.destroy(err => {
     //console.log(err)
     res.redirect('/login')
   })
 }
 
-exports.login = (req, res, next) => {
-  if (req.method == 'POST') {
-    const pass = password.randomPassword({ length: 10, characters: [password.lower, password.upper, password.digits, password.symbols] })
-    bcrypt.hash(pass, 12)
-      .then(hashedPass => {
-        return new Company({
-          name: req.body.name,
-          address: req.body.address,
-          compDesc: req.body.compDesc,
-          email: req.body.email,
-          password: hashedPass
-        }).save()
-      })
-      .then(company => {
-        return transporter.sendMail({
-          to: 'garg.rohan26@gmail.com',
-          from: 'Manager',
-          subject: 'Welcome to the Manager',
-          html: `
+exports.getLogin = (req, res, next) => {
+  res.render('login',{
+    err: ''
+  })
+}
+
+exports.getSignUpForm = (req, res, next) => {
+  res.render('signup', {
+    err: ''
+  })
+}
+
+exports.postSignup = (req, res, next) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    //console.log(errors.array())
+    return res.status(422).render('signup',{
+      err: errors.array()[0].msg
+    })
+  }
+  const pass = password.randomPassword({ length: 10, characters: [password.lower, password.upper, password.digits, password.symbols] })
+  bcrypt.hash(pass, 12)
+    .then(hashedPass => {
+      return new Company({
+        name: req.body.name,
+        address: req.body.address,
+        compDesc: req.body.compDesc,
+        email: req.body.email,
+        password: hashedPass
+      }).save()
+    })
+    .then(company => {
+      return transporter.sendMail({
+        to: 'garg.rohan26@gmail.com',
+        from: 'Manager',
+        subject: 'Welcome to the Manager',
+        html: `
             <body>
             <p>Hello ${ req.body.name}</p>
             <p>We are glad that your company is now a part of Manager.</p>
@@ -72,16 +103,12 @@ exports.login = (req, res, next) => {
             <p>Have a great experience!!!</p>
             </body>
             `
-        })
       })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-  res.render('login')
-}
-
-
-exports.getSignUpForm = (req, res, next) => {
-  res.render('signup')
+    })
+    .then(() => {
+      res.redirect('/login')
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }
