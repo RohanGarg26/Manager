@@ -1,14 +1,16 @@
 <%- include('includes/start.ejs') %>
 <title>All Members</title>
 <style>
-  .blue {
-    border-color: #04b4d5;
+  .black {
+    border-color: black;
     border-width: 3px;
   }
 </style>
 </head>
 
 <%- include('includes/header.ejs') %>
+
+<%- include('includes/company-details.ejs') %>
 
 <main style="width: device-width">
   <table style="width: 100%">
@@ -30,8 +32,8 @@
         <td>
           <h3 style="text-align: center">NO MEMBERS EXIST</h3>
           <div class="card" style="width: 286px; height:406px; border-width: 3px">
-            <img src="/images/logo-contact-person-png.png" class="card-img-top" alt="add-new member"
-              style="width: 280px; height: 300px; margin-top: 20px ">
+            <img src="/images/add-member.png" class="card-img-top" alt="add-new member"
+              style="width: 280px; height: 300px; margin-top: 20px " title="Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0">
             <a href="/add-member" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
               Member</a>
           </div>
@@ -40,10 +42,10 @@
         <% if(count>0){ %>
         <td style="display: grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); grid-gap: 20px">
           <% for (let mem of member) { %>
-          <div class="card <%= mem.teamHead == 'Yes' ? 'blue' : ' ' %>"
+          <div class="card <%= mem.teamHead == 'Yes' ? 'black' : ' ' %>"
             style="width: 286px; height:406px; border-width: 3px">
             <img src="/<%= mem.imageUrl %>" class="card-img-top" alt="member's image"
-              style="width: 280px; height: 189px">
+              style="width: 280px; height: 189px" title="<%= mem.imageUrl == 'images/default-member.png'?'Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0':'' %>">
             <div class="card-body" style="text-align: center">
               <h5 class="card-title"><%= mem.firstName %> <%= mem.lastName %></h5>
               <h6 class="card-title"><%= mem.jobTitle %></h6>
@@ -61,8 +63,8 @@
           </div>
           <% } %>
           <div class="card" style="width: 286px; height:406px; border-width: 3px">
-            <img src="/images/logo-contact-person-png.png" class="card-img-top" alt="add-new member"
-              style="width: 280px; height: 300px; margin-top: 20px ">
+            <img src="/images/add-member.png" class="card-img-top" alt="add-new member"
+              style="width: 280px; height: 300px; margin-top: 20px " title="Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0">
             <a href="/add-member" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
               Member</a>
           </div>

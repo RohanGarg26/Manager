@@ -1,4 +1,4 @@
-//importing modules and packages
+//including packages
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
@@ -7,13 +7,10 @@ const multer = require('multer')
 const session = require('express-session')
 const mongoDbStore = require('connect-mongodb-session')(session)
 const csrf = require('csurf')
-const flash = require('connect-flash')
 
 //importing routes
 const authRoutes = require('./routes/auth')
 const adminRoutes = require('./routes/company-admin')
-const memberRoutes = require('./routes/member')
-const publicRoutes = require('./routes/public')
 
 //constants required or various configs
 const app = express() //for express
@@ -51,9 +48,6 @@ app.use(session({
 //middleware for csrf
 app.use(csrfProtection)
 
-//middleware for flash
-app.use(flash())
-
 //middleware for serving static files
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/images', express.static(path.join(__dirname, 'images')))
@@ -62,7 +56,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')))
 app.set('view engine', 'ejs')
 app.set('views', 'views')
 
-//middleware for handling CORS error
+//middleware for handling CORS error by allowing to set certain headers
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATC,DELETE')
@@ -78,8 +72,13 @@ app.use((req, res, next) => {
 
 //middlewares for routes
 app.use(authRoutes.routes)
+
+app.use((req, res, next) => { //to set response locals required to toggle company-details
+  res.locals.company = req.session.company
+  next()
+})
+
 app.use(adminRoutes.routes)
-app.use(publicRoutes.routes)
 
 //connecting to mongoose database
 mongoose.connect(`${process.env.mongoString}`, { useNewUrlParser: true })

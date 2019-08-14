@@ -4,10 +4,9 @@ const bcrypt = require('bcryptjs')
 const password = require('secure-random-password')
 const { validationResult } = require('express-validator')
 
-const Member = require('../model/member')
-const Team = require('../model/team')
 const Company = require('../model/company')
 
+//To configure mailing service
 const transporter = nodemailer.createTransport(sgTransport({
   auth: {
     api_key: `${process.env.sgKey}`
@@ -19,7 +18,7 @@ exports.loginAuth = (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     //console.log(errors.array())
-    return res.status(422).render('login',{
+    return res.status(422).render('login', {
       err: errors.array()[0].msg
     })
   }
@@ -31,10 +30,11 @@ exports.loginAuth = (req, res, next) => {
       if (match) {
         req.session.DMisLoggedIn = true;
         req.session.companyId = company._id;
-        return req.session.save()
+        req.session.company = company;
+        req.session.save()
       }
       else {
-        res.render('login',{
+        res.render('login', {
           err: 'Invalid Password'
         })
       }
@@ -47,6 +47,14 @@ exports.loginAuth = (req, res, next) => {
     })
 }
 
+//login
+exports.getLogin = (req, res, next) => {
+  res.render('login', {
+    err: ''
+  })
+}
+
+//logout
 exports.logout = (req, res, next) => {
   req.session.destroy(err => {
     //console.log(err)
@@ -54,23 +62,20 @@ exports.logout = (req, res, next) => {
   })
 }
 
-exports.getLogin = (req, res, next) => {
-  res.render('login',{
-    err: ''
-  })
-}
-
+//signup
 exports.getSignUpForm = (req, res, next) => {
   res.render('signup', {
     err: ''
   })
 }
 
+
+//signup
 exports.postSignup = (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     //console.log(errors.array())
-    return res.status(422).render('signup',{
+    return res.status(422).render('signup', {
       err: errors.array()[0].msg
     })
   }
@@ -87,7 +92,7 @@ exports.postSignup = (req, res, next) => {
     })
     .then(company => {
       return transporter.sendMail({
-        to: 'garg.rohan26@gmail.com',
+        to: `${ req.body.email}`,
         from: 'Manager',
         subject: 'Welcome to the Manager',
         html: `

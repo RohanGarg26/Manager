@@ -10,6 +10,10 @@
 
 <%- include('includes/header.ejs') %>
 
+<% if(edit !== 'true'){ %>
+  <%- include('includes/company-details.ejs') %>
+<% } %>
+
 <main style="width: device-width">
   <table style="width: 100%">
     <tbody style="width: 100%">
@@ -27,29 +31,36 @@
       <tr>
         <td>
           <form style="padding: 20px"
-            action="<%= edit ==='true'?'/member/edit-member':'/add-member'%>" method="POST"
+            action="<%= edit ==='true'?'/member/edit-member/' + member._id:'/add-member'%>" method="POST"
             enctype="multipart/form-data">
+
+            <% if (err) { %>
+              <div class="alert alert-danger" role="alert" style="margin: 0px;padding:10px; text-align: center">
+                  <%= err %>
+              </div>
+            <% } %>
+
             <div class="form-group">
-              <label for="firstName">First Name</label>
+              <label for="firstName"><abbr title="Required" style="text-decoration: none">* </abbr>First Name</label>
               <input type="text" class="form-control" id="firstName" name="firstName"
                 placeholder="<%= edit === 'true'?member.firstName:'Enter First Name' %>"
                 value="<%= edit === 'true'?member.firstName:'' %>">
             </div>
             <div class="form-group">
-              <label for="lastName">Last Name</label>
+              <label for="lastName"><abbr title="Required" style="text-decoration: none">* </abbr>Last Name</label>
               <input type="text" class="form-control" id="lastName" name="lastName"
                 placeholder="<%= edit === 'true'?member.lastName:'Enter Last Name' %>"
                 value="<%= edit === 'true'?member.lastName:'' %>">
             </div>
             <div class="form-group">
-              <label for="dob">Date of Birth</label>
+              <label for="dob"><abbr title="Required" style="text-decoration: none">* </abbr>Date of Birth</label>
               <input type="date" class="form-control" id="dob" name="dob" aria-describedby="dobHelp"
                 placeholder="Select Date of Birth" value="<%= edit === 'true'?date:'' %>">
               <small id="dobHelp" class="form-text text-muted">We'll never share your date of birth with anyone
                 else.</small>
             </div>
             <div class="form-group">
-              <label for="address">Address</label>
+              <label for="address"><abbr title="Required" style="text-decoration: none">* </abbr>Address</label>
               <input type="text" class="form-control" id="address" name="address"
                 placeholder="<%= edit === 'true'?member.address:'Enter permanent address' %>"
                 aria-describedby="addressHelp" value="<%= edit === 'true'?member.address:'' %>">
@@ -57,20 +68,20 @@
                 else.</small>
             </div>
             <div class="form-group">
-              <label for="emailId">Email address</label>
+              <label for="emailId"><abbr title="Required" style="text-decoration: none">* </abbr>Email address</label>
               <input type="email" class="form-control" id="emailId" name="emailId" aria-describedby="emailHelp"
                 placeholder="<%= edit === 'true'?member.emailId:'Enter Email Address' %>"
                 value="<%= edit === 'true'?member.emailId:'' %>">
-              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+              <small id="emailHelp" class="form-text text-muted">Check member registration details on this email address.</small>
             </div>
             <div class="form-group">
-              <label for="jobTitle">Job Title</label>
+              <label for="jobTitle"><abbr title="Required" style="text-decoration: none">* </abbr>Job Title</label>
               <input type="text" class="form-control" id="jobTitle" name="jobTitle"
                 placeholder="<%= edit === 'true'?member.jobTitle:'Enter Job Title' %>"
                 value="<%= edit === 'true'?member.jobTitle:'' %>">
             </div>
             <div class="form-group">
-              <label for="jobDesc">Job Description</label>
+              <label for="jobDesc"><abbr title="Required" style="text-decoration: none">* </abbr>Job Description</label>
               <textarea class="form-control" id="jobDesc" maxlength="200" name="jobDesc"
                 rows="5"><%= edit === 'true'?member.jobDesc:'' %></textarea>
             </div>
@@ -113,6 +124,7 @@
             <div class="custom-file">
               <label class="custom-file-label" for="Image">Choose Image</label>
               <input type="file" class="custom-file-input" id="image" name="image">
+              <small id="emailHelp" class="form-text text-muted">If you do not upload the image the a default image will be set.</small>
             </div>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <% if(edit === 'true'){ %>

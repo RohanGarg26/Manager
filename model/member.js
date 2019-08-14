@@ -39,17 +39,17 @@ const memberSchema = new mongoose.Schema({
     type: String
   },
   companyId: {
-    type:  mongoose.ObjectId,
+    type: mongoose.ObjectId,
     required: true
   },
   teamId: {
     type: mongoose.ObjectId,
     required: true
   },
-  teamHead:{
+  teamHead: {
     type: String,
   },
-  password:{
+  password: {
     type: String,
     required: true,
     indexes: {

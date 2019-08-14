@@ -5,11 +5,15 @@
 
 <%- include('includes/header.ejs') %>
 
+<%- include('includes/company-details.ejs') %>
+
 <main style="width: device-width">
   <table style="width: 100%">
+    </div>
     <tbody style="width: 100%">
       <tr>
         <%- include('includes/side-bar.ejs') %>
+
         <td style="text-align: center; padding-top: 15px">
           <h2>ADD NEW TEAM</h2>
         </td>
@@ -17,14 +21,19 @@
       <tr>
         <td>
           <form style="padding: 20px" action="/add-team" method="POST" enctype="multipart/form-data">
+            <% if (err) { %>
+              <div class="alert alert-danger" role="alert" style="margin: 0px;padding:10px; text-align: center">
+                  <%= err %>
+              </div>
+            <% } %>
             <div class="form-group">
-              <label for="team">Team Name</label>
-              <input type="text" class="form-control" id="team" name="team" placeholder="Enter Team Name">
+              <label for="team"><abbr title="Required" style="text-decoration: none">* </abbr>Team Name</label>
+              <input type="text" class="form-control" id="team" name="team" placeholder="Enter Team Name" required>
             </div>
             <div class="form-group">
-              <label for="teamDesc">Team Description</label>
+              <label for="teamDesc"><abbr title="Required" style="text-decoration: none">* </abbr>Team Description</label>
               <input type="text" class="form-control" id="teamDesc" name="teamDesc"
-                placeholder="Enter Team Description">
+                placeholder="Enter Team Description" required>
             </div>
             <div class="custom-file">
               <label class="custom-file-label" for="image">Choose Image</label>
