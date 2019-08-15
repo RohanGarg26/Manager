@@ -1,0 +1,20 @@
+<%- include('includes/start.ejs') %>
+
+<title>Error :(</title>
+</head>
+
+<%- include('includes/header.ejs') %>
+
+<main
+  style="background-image: url('/images/500-internal-server-error.png'); background-repeat: no-repeat; width: 100%; height: 80vh;background-position: center;">
+  <div class="jumbotron jumbotron-fluid bg-dark text-white"  style="position: absolute; top: 15%; left:20%;width: 20%; padding: 30px">
+    <div class="container">
+      <h1 class="display-4">500</h1>
+      <p class="lead">The server is not responding :(</p>
+      <p class="lead">Please contact your administrator.</p>
+    </div>
+  </div>
+  <a href="<%= auth == 'true' ? '/teams':'/login' %>" class="btn btn-dark btn-lg" style="position: absolute; top: 79%; left:40%;width: 20%">Head Home</a>
+</main>
+
+<%- include('includes/footer.ejs') %>

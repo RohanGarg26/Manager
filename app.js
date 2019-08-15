@@ -1,4 +1,5 @@
 //including packages
+const fs = require('fs')
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
@@ -7,6 +8,9 @@ const multer = require('multer')
 const session = require('express-session')
 const mongoDbStore = require('connect-mongodb-session')(session)
 const csrf = require('csurf')
+const helmet = require('helmet')
+const compression = require('compression')
+const morgan = require('morgan')
 
 //importing routes
 const authRoutes = require('./routes/auth')
@@ -27,6 +31,19 @@ const store = new mongoDbStore({ //for connect-mongodb-session
   collection: 'sessions'
 })
 const csrfProtection = csrf()
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flag: 'a' }
+)
+
+//for setting headers
+app.use(helmet())
+
+//for compressing files
+app.use(compression())
+
+//for logging request data
+app.use(morgan('combined', { stream: accessLogStream }))
 
 //middleware for parsing request body
 app.use(multer({ storage: fileStorage }).single('image'))
@@ -79,6 +96,26 @@ app.use((req, res, next) => { //to set response locals required to toggle compan
 })
 
 app.use(adminRoutes.routes)
+
+//404
+app.use('/',(req,res,next)=>{
+  if(req.session.DMisLoggedIn)  {
+    res.render('404',{auth: 'true'})
+  }
+  else{
+    res.status(404).render('404',{auth: 'false'})
+  }
+})
+
+//500
+app.use('/',(error,req,res,next)=>{
+  if(req.session.DMisLoggedIn)  {
+    res.render('500',{auth: 'true'})
+  }
+  else{
+    res.render('500',{auth: 'false'})
+  }
+})
 
 //connecting to mongoose database
 mongoose.connect(`${process.env.mongoString}`, { useNewUrlParser: true })

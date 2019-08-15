@@ -43,7 +43,7 @@ exports.loginAuth = (req, res, next) => {
       res.redirect('/teams')
     })
     .catch(err => {
-      console.log(err)
+      next(new Error(err))
     })
 }
 
@@ -57,7 +57,7 @@ exports.getLogin = (req, res, next) => {
 //logout
 exports.logout = (req, res, next) => {
   req.session.destroy(err => {
-    //console.log(err)
+    next(new Error(err))
     res.redirect('/login')
   })
 }
@@ -92,7 +92,7 @@ exports.postSignup = (req, res, next) => {
     })
     .then(company => {
       return transporter.sendMail({
-        to: `${ req.body.email}`,
+        to: `${req.body.email}`,
         from: 'Manager',
         subject: 'Welcome to the Manager',
         html: `
@@ -114,6 +114,6 @@ exports.postSignup = (req, res, next) => {
       res.redirect('/login')
     })
     .catch(err => {
-      console.log(err)
+      next(new Error(err))
     })
 }
