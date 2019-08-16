@@ -1,0 +1,19 @@
+<%- include('includes/start.ejs') %>
+
+<title>Error :(</title>
+</head>
+
+<%- include('includes/header.ejs') %>
+
+<main
+  style="background-image: url('/images/unauthorized.png'); background-repeat: no-repeat; width: 100%; height: 80vh;background-position: center;">
+  <div class="jumbotron jumbotron-fluid bg-dark text-white"  style="position: absolute; top: 15%; left:17%;width: 23%; padding: 30px">
+    <div class="container">
+      <h1 class="display-4">Not Cool :(</h1>
+      <p class="lead">You do not have access to these resources !!!</p>
+    </div>
+  </div>
+  <a href="/login" class="btn btn-dark btn-lg" style="position: absolute; top: 77%; left:40%;width: 20%">Step Back</a>
+</main>
+
+<%- include('includes/footer.ejs') %>

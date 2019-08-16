@@ -31,8 +31,8 @@ exports.postDeleteAccount = (req, res, next) => {
       res.redirect('/logout')
     })
     .catch(err => {
-      next(new Error(err))
       console.log(err)
+      next(new Error(err))
     })
 }
 
@@ -76,14 +76,14 @@ exports.getMember = (req, res, next) => {
               res.render('disp-all-members', { count: count, member: member, path: '/members' })
             })
             .catch(err => {
-              next(new Error(err))
               console.log(err)
+              next(new Error(err))
             })
         }
       })
       .catch(err => {
-        next(new Error(err))
         console.log(err)
+        next(new Error(err))
       })
   }
   else {  //if either a get request is made or a new member has been added
@@ -100,8 +100,8 @@ exports.getMember = (req, res, next) => {
         }
       })
       .catch(err => {
-        next(new Error(err))
         console.log(err)
+        next(new Error(err))
       })
   }
 }
@@ -139,8 +139,8 @@ exports.postAddMember = (req, res, next) => {
               })
             })
             .catch(err => {
-              next(new Error(err))
               console.log(err)
+              next(new Error(err))
             })
         }
       })
@@ -251,8 +251,8 @@ exports.getAddMember = (req, res, next) => {
       res.render('add-member', { team: team, path: ' ', edit: 'false', err: '' })
     })
     .catch(err => {
-      next(new Error(err))
       console.log(err)
+      next(new Error(err))
     })
 }
 
@@ -277,8 +277,8 @@ exports.getMemberDetails = (req, res, next) => {
       res.render('member-detail', { member: member, dob: d[0].dob })
     })
     .catch(err => {
-      next(new Error(err))
       console.log(err)
+      next(new Error(err))
     })
 }
 
@@ -340,8 +340,8 @@ exports.getTeamDetails = (req, res, next) => {
       }
     })
     .catch(err => {
-      next(new Error(err))
       console.log(err)
+      next(new Error(err))
     })
 }
 
@@ -362,8 +362,8 @@ exports.deleteMem = (req, res, next) => {
       if (member.imageUrl) {
         if (member.imageUrl != 'images/default-member.png') {
           fs.unlink(member.imageUrl, (err) => {
-            next(new Error(err))
             console.log(err)
+            next(new Error(err))
           })
         }
       }
@@ -378,8 +378,8 @@ exports.deleteMem = (req, res, next) => {
       res.redirect('/members')
     })
     .catch(err => {
-      next(new Error(err))
       console.log(err)
+      next(new Error(err))
     })
 }
 
@@ -410,8 +410,8 @@ exports.deleteTeam = (req, res, next) => {
       if (team.imageUrl) {
         if (team.imageUrl != 'images/default-team.png') {
           fs.unlink(team.imageUrl, (err) => {
-            next(new Error(err))
             console.log(err)
+            next(new Error(err))
           })
         }
       }
@@ -426,8 +426,8 @@ exports.deleteTeam = (req, res, next) => {
       res.redirect('/teams')
     })
     .catch(err => {
-      next(new Error(err))
       console.log(err)
+      next(new Error(err))
     })
 }
 
@@ -455,8 +455,8 @@ exports.getEditMember = (req, res, next) => {
       res.render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: '' })
     })
     .catch(err => {
-      next(new Error(err))
       console.log(err)
+      next(new Error(err))
     })
 }
 
@@ -488,11 +488,11 @@ exports.postEditMember = (req, res, next) => {
         res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: errors.array()[0].msg })
       })
       .catch(err => {
-        next(new Error(err))
         console.log(err)
+        next(new Error(err))
       })
   }
-  if (req.body.teamHead == 'Yes' && req.body.team != 'Team Not Assigned') {
+  if (req.body.teamHead == 'Yes' && req.body.team == 'Team Not Assigned') {
     Member.findOne({ $and: [{ teamHead: 'Yes' }, { team: req.body.team }, { companyId: req.session.companyId }] })
       .then(member => {
         if (member) {
@@ -519,8 +519,8 @@ exports.postEditMember = (req, res, next) => {
               res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'The selected team already has a Team Head' })
             })
             .catch(err => {
-              next(new Error(err))
               console.log(err)
+              next(new Error(err))
             })
         }
       })
@@ -546,12 +546,11 @@ exports.postEditMember = (req, res, next) => {
         ]), member, team])
       })
       .then(([date, member, team]) => {
-        console.log(team, member)
         res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'Member cannot be head of a team that does not exists.' })
       })
       .catch(err => {
-        next(new Error(err))
         console.log(err)
+        next(new Error(err))
       })
   }
   else {
@@ -569,8 +568,8 @@ exports.postEditMember = (req, res, next) => {
           if (member.imageUrl) {
             if (member.imageUrl != 'images/default-member.png') {
               fs.unlink(String(member.imageUrl), (err) => {
-                next(new Error(err))
                 console.log(err)
+                next(new Error(err))
               })
             }
           }
@@ -605,8 +604,8 @@ exports.postEditMember = (req, res, next) => {
           res.redirect('/members')
         })
         .catch(err => {
-          next(new Error(err))
           console.log(err)
+          next(new Error(err))
         })
     }
     else {
@@ -615,8 +614,8 @@ exports.postEditMember = (req, res, next) => {
           if (member.imageUrl) {
             if (member.imageUrl != 'images/default-member.png') {
               fs.unlink(String(member.imageUrl), (err) => {
-                next(new Error(err))
                 console.log(err)
+                next(new Error(err))
               })
             }
           }
@@ -643,8 +642,8 @@ exports.postEditMember = (req, res, next) => {
           res.redirect('/members')
         })
         .catch(err => {
-          next(new Error(err))
           console.log(err)
+          next(new Error(err))
         })
     }
   }
@@ -675,14 +674,14 @@ exports.getTeam = (req, res, next) => {
               res.render('disp-all-teams', { count: count, team: team, path: '/teams' })
             })
             .catch(err => {
-              next(new Error(err))
               console.log(err)
+              next(new Error(err))
             })
         }
       })
       .catch(err => {
-        next(new Error(err))
         console.log(err)
+        next(new Error(err))
       })
   }
   else {
@@ -697,14 +696,14 @@ exports.getTeam = (req, res, next) => {
               res.render('disp-all-teams', { count: count, team: team, path: '/teams' })
             })
             .catch(err => {
-              next(new Error(err))
               console.log(err)
+              next(new Error(err))
             })
         }
       })
       .catch(err => {
-        next(new Error(err))
         console.log(err)
+        next(new Error(err))
       })
   }
 }

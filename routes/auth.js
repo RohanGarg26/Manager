@@ -8,6 +8,8 @@ const Company = require('../model/company')
 
 const authController = require('../controllers/auth')
 
+const isAuthMiddleware = require('../middlewares/isAuth')
+
 router.post('/login-auth', [  //validations
   check('email')
     .isEmail()
@@ -46,6 +48,6 @@ router.post('/signup', [  //vlidations
     .not().isEmpty({ ignore_whitespace: true })
 ], authController.postSignup)
 
-router.post('/logout', authController.logout)
+router.post('/logout',isAuthMiddleware.isAuth, authController.logout)
 
 exports.routes = router

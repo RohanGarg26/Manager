@@ -15,6 +15,9 @@ const morgan = require('morgan')
 //importing routes
 const authRoutes = require('./routes/auth')
 const adminRoutes = require('./routes/company-admin')
+const associateAuthRoutes = require('./routes/associate-auth')
+const teamHeadRoutes = require('./routes/team-head')
+const teamMemberRoutes = require('./routes/team-member')
 
 //constants required or various configs
 const app = express() //for express
@@ -51,14 +54,13 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 //middleware for session
 app.use(session({
-  secret: 'my secret',
+  secret: `${process.env.sessionSecret}`,
   resave: false,
   saveUninitialized: false,
   store: store,
   cookie: {
     sameSite: true,
-    expires: false,
-    maxAge: 3600000 * 24
+    maxAge: 3600000 * 12
   }
 }))
 
@@ -89,33 +91,43 @@ app.use((req, res, next) => {
 
 //middlewares for routes
 app.use(authRoutes.routes)
+app.use('/associate', associateAuthRoutes.routes)
 
 app.use((req, res, next) => { //to set response locals required to toggle company-details
-  res.locals.company = req.session.company
+  if (req.session.company) {
+    res.locals.company = req.session.company
+  }
   next()
 })
 
 app.use(adminRoutes.routes)
 
+app.use('/associate/team-head', teamHeadRoutes.routes)
+app.use('/associate/team-member', teamMemberRoutes.routes)
+
 //404
-app.use('/',(req,res,next)=>{
-  if(req.session.DMisLoggedIn)  {
-    res.render('404',{auth: 'true'})
+app.use('/', (req, res, next) => {
+  if (req.session.DMisLoggedIn) {
+    res.status(404)
+    res.render('404', { auth: 'true' })
   }
-  else{
-    res.status(404).render('404',{auth: 'false'})
+  else {
+    res.status(404)
+    res.render('404', { auth: 'false' })
   }
 })
 
 //500
-app.use('/',(error,req,res,next)=>{
-  if(req.session.DMisLoggedIn)  {
-    res.render('500',{auth: 'true'})
-  }
-  else{
-    res.render('500',{auth: 'false'})
-  }
-})
+// app.use('/', (error, req, res, next) => {
+//   if (req.session.DMisLoggedIn) {
+//     res.status(500)
+//     res.render('500', { auth: 'true' })
+//   }
+//   else {
+//     res.status(500)
+//     res.render('500', { auth: 'false' })
+//   }
+// })
 
 //connecting to mongoose database
 mongoose.connect(`${process.env.mongoString}`, { useNewUrlParser: true })

@@ -1,0 +1,79 @@
+<%- include('../includes/start.ejs') %>
+
+<% if(path == 'team-head/team-members') {%>
+<title>Team Members</title>
+<% } %>
+<% if(path == 'team-head/all-heads') {%>
+<title>All Team Heads</title>
+<% } %>
+<style>
+  .black {
+    border-color: black;
+    border-width: 3px;
+  }
+</style>
+</head>
+
+<%- include('../includes/header.ejs') %>
+
+<main style="width: device-width">
+  <table style="width: 100%; z-index: 15000;">
+    <tbody style="width: 100%">
+      <tr>
+
+        <%- include('../includes/head-side-bar.ejs') %>
+
+
+        <td class="sticky-top" style="top: 88.4px; background-color: white">
+          <form class="form-inline my-2 my-lg-0" method="post"
+            action="<%= path == 'team-head/team-members'?'/associate/team-head/team-members/?searchField':'/associate/team-head/all-heads/?searchField'%>">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" name="searchField"
+              aria-label="Search" style="width: 85%">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button class="btn btn-outline-success my-2 my-sm-0" id="search" type="submit"
+              style="width: 10%; padding: auto">Search</button>
+          </form>
+        </td>
+      </tr>
+
+      <tr>
+        <% if(count==0){ %>
+        <td>
+          <% if(path == 'team-head/team-members') {%>
+          <h3 style="text-align: center">NO TEAM MEMBERS EXIST</h3>
+          <% } %>
+          <% if(path == 'team-head/all-heads') {%>
+          <h3 style="text-align: center">NO OTHER TEAM HEADS EXIST</h3>
+          <% } %>
+        </td>
+        <% } %>
+        <% if(count>0){ %>
+        <td style="display: grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); grid-gap: 20px">
+          <% for (let mem of member) { %>
+          <div class="card <%= mem.teamHead == 'Yes' ? 'black' : ' ' %>"
+            style="width: 286px; height:406px; border-width: 3px">
+            <img src="/<%= mem.imageUrl %>" class="card-img-top" alt="member's image"
+              style="width: 280px; height: 189px"
+              title="<%= mem.imageUrl == 'images/default-member.png'?'Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0':'' %>">
+            <div class="card-body" style="text-align: center">
+              <h5 class="card-title"><%= mem.firstName %> <%= mem.lastName %></h5>
+              <h6 class="card-title"><%= mem.jobTitle %></h6>
+              <p class="card-text"><%= mem.jobDesc %></p>
+            </div>
+            <div style="margin: auto; margin-bottom: 10px;">
+              <form method="POST" action="/member/delete/<%= mem._id %>"
+                style="padding: 0px; margin: 0px; display: inline;">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-primary">Assign Task</button>
+              </form>
+            </div>
+          </div>
+          <% } %>
+        </td>
+        <% } %>
+      </tr>
+    </tbody>
+  </table>
+</main>
+<script src="/js/toggle.js" async></script>
+<%- include('../includes/end.ejs') %>

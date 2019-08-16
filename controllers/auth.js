@@ -19,7 +19,8 @@ exports.loginAuth = (req, res, next) => {
   if (!errors.isEmpty()) {
     //console.log(errors.array())
     return res.status(422).render('login', {
-      err: errors.array()[0].msg
+      err: errors.array()[0].msg,
+      errAss: null
     })
   }
   Company.findOne({ email: req.body.email })
@@ -35,7 +36,8 @@ exports.loginAuth = (req, res, next) => {
       }
       else {
         res.render('login', {
-          err: 'Invalid Password'
+          err: 'Invalid Password',
+          errAss: null
         })
       }
     })
@@ -43,6 +45,7 @@ exports.loginAuth = (req, res, next) => {
       res.redirect('/teams')
     })
     .catch(err => {
+      console.log(err)
       next(new Error(err))
     })
 }
@@ -50,14 +53,14 @@ exports.loginAuth = (req, res, next) => {
 //login
 exports.getLogin = (req, res, next) => {
   res.render('login', {
-    err: ''
+    err: '',
+    errAss: null
   })
 }
 
 //logout
 exports.logout = (req, res, next) => {
   req.session.destroy(err => {
-    next(new Error(err))
     res.redirect('/login')
   })
 }
@@ -114,6 +117,7 @@ exports.postSignup = (req, res, next) => {
       res.redirect('/login')
     })
     .catch(err => {
+      console.log(err)
       next(new Error(err))
     })
 }
