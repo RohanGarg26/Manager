@@ -11,6 +11,7 @@ const csrf = require('csurf')
 const helmet = require('helmet')
 const compression = require('compression')
 const morgan = require('morgan')
+const http = require('http')
 
 //importing routes
 const authRoutes = require('./routes/auth')
@@ -68,6 +69,7 @@ app.use(session({
 app.use(csrfProtection)
 
 //middleware for serving static files
+app.use(express.static(path.join(__dirname)))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/images', express.static(path.join(__dirname, 'images')))
 
@@ -106,16 +108,16 @@ app.use('/associate/team-head', teamHeadRoutes.routes)
 app.use('/associate/team-member', teamMemberRoutes.routes)
 
 //404
-app.use('/', (req, res, next) => {
-  if (req.session.DMisLoggedIn) {
-    res.status(404)
-    res.render('404', { auth: 'true' })
-  }
-  else {
-    res.status(404)
-    res.render('404', { auth: 'false' })
-  }
-})
+// app.use('/', (req, res, next) => {
+//   if (req.session.DMisLoggedIn) {
+//     res.status(404)
+//     res.render('404', { auth: 'true' })
+//   }
+//   else {
+//     res.status(404)
+//     res.render('404', { auth: 'false' })
+//   }
+// })
 
 //500
 // app.use('/', (error, req, res, next) => {
@@ -132,7 +134,8 @@ app.use('/', (req, res, next) => {
 //connecting to mongoose database
 mongoose.connect(`${process.env.mongoString}`, { useNewUrlParser: true })
   .then(result => {
-    app.listen(8080)
+    const server = app.listen(8080)
+    let io = require('./utils/socket').init(server)
   })
   .catch(err => {
     console.log(err)

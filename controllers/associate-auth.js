@@ -6,7 +6,7 @@ const Member = require('../model/member')
 exports.postAssociateLogin = (req,res,next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
-    console.log(errors.array())
+    //console.log(errors.array())
     return res.status(422).render('login', {
       errAss: errors.array()[0].msg,
       err: null
@@ -34,7 +34,7 @@ exports.postAssociateLogin = (req,res,next) => {
         res.redirect('/associate/team-head/team-members')
       }
       else if(req.session.member.teamHead === 'No'){
-        res.redirect('/associate/team-member')
+        res.redirect('/associate/team-member/task/pending')
       }
     })
     .catch(err => {

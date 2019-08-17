@@ -34,6 +34,8 @@ router.get('/members', authMiddleware.isAuth, adminController.getMember)
 router.get('/add-member', authMiddleware.isAuth, adminController.getAddMember)
 
 router.post('/add-member', authMiddleware.isAuth, [ //validations
+  body(['firstName', 'lastName', 'dob', 'address', 'emailId', 'jobTitle', 'jobDesc'], "All fields marked with '*' are required.")
+    .not().isEmpty({ ignore_whitespace: true }),
   check('emailId')
     .isEmail()
     .withMessage('Enter a valid email address.')
@@ -46,8 +48,11 @@ router.post('/add-member', authMiddleware.isAuth, [ //validations
         })
     })
     .trim(),
-  body(['firstName', 'lastName', 'dob', 'address', 'emailId', 'jobTitle', 'jobDesc'], "All fields marked with '*' are required.")
-    .not().isEmpty({ ignore_whitespace: true })
+  body(['lastNmae','firstName','jobTitle'],'Job title,First and Last name can have a maximum of 15 letters each')
+    .isLength({max:15}),
+  check('jobDesc')
+    .isLength({max:60})
+    .withMessage('Job title can have a maximum of 60 letters.')
 ], adminController.postAddMember)
 
 
@@ -59,6 +64,8 @@ router.get('/add-team', authMiddleware.isAuth, adminController.getAddTeam)
 
 router.post('/add-team', authMiddleware.isAuth, [ //validations
   check('team')
+  .isLength({max:25})
+  .withMessage('Team name can have a maximum of 25 letters.')
     .custom((value, { req }) => {
       return Team.findOne({ team: value })
         .then(team => {
@@ -67,8 +74,13 @@ router.post('/add-team', authMiddleware.isAuth, [ //validations
           }
         })
     }),
-  body(['team', 'teamDesc'], 'Team Name and Team Description are required.')
-    .not().isEmpty({ ignore_whitespace: true })
+    check('teamDesc')
+    .isLength({max:60})
+    .withMessage('Team description can have a maximum of 60 letters'),
+  body(['team', 'teamDesc'])
+    .not()
+    .isEmpty({ ignore_whitespace: true })
+    .withMessage('Team Name and Team Description are required.')
 ], adminController.postAddTeam)
 
 router.post('/delete-account', authMiddleware.isAuth, adminController.postDeleteAccount)

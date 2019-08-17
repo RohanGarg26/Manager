@@ -61,8 +61,10 @@
               <p class="card-text"><%= mem.jobDesc %></p>
             </div>
             <div style="margin: auto; margin-bottom: 10px;">
-              <form method="POST" action="/member/delete/<%= mem._id %>"
+              <form method="POST" action="/associate/team-head/assign-task"
                 style="padding: 0px; margin: 0px; display: inline;">
+                <input type="hidden" name="assignedToId" value="<%= mem._id %>">
+                <input type="hidden" name="assignedToName" value="<%= mem.firstName + ' ' + mem.lastName %>">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <button type="submit" class="btn btn-primary">Assign Task</button>
               </form>
@@ -75,5 +77,4 @@
     </tbody>
   </table>
 </main>
-<script src="/js/toggle.js" async></script>
 <%- include('../includes/end.ejs') %>

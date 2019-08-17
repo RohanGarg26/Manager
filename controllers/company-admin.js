@@ -125,7 +125,23 @@ exports.postAddMember = (req, res, next) => {
         next(new Error(err))
       })
   }
-  if (req.body.teamHead == 'Yes' && req.body.team != 'Team Not Assigned') { //validation
+  if(req.body.dob >= new Date().toISOString().split('T')[0])
+  {
+    Team.find({ companyId: req.session.companyId })
+            .then(team => {
+              return res.status(422).render('add-member', {
+                err: 'Invalid date of birth.',
+                path: '',
+                edit: 'false',
+                team: team
+              })
+            })
+            .catch(err => {
+              console.log(err)
+              next(new Error(err))
+            })
+  }
+  else if (req.body.teamHead == 'Yes' && req.body.team != 'Team Not Assigned') { //validation
     Member.findOne({ $and: [{ teamHead: 'Yes' }, { team: req.body.team }, { companyId: req.session.companyId }] })
       .then(member => {
         if (member) {
@@ -491,6 +507,35 @@ exports.postEditMember = (req, res, next) => {
         console.log(err)
         next(new Error(err))
       })
+  }
+  if(req.body.dob >= new Date().toISOString().split('T')[0])
+  {
+    Team.find({ companyId: req.session.companyId }) 
+            .then(team => {
+              //console.log(req.params.memberId)
+              return Promise.all([Member.findOne({
+                $and: [
+                  { _id: req.params.memberId },
+                  { companyId: req.session.companyId }
+                ]
+              }), team])
+            })
+            .then(([member, team]) => {
+              return Promise.all([Member.aggregate([  
+                {
+                  $project: {
+                    dob: { $dateToString: { format: "%Y-%m-%d", date: "$dob" } }
+                  }
+                }
+              ]), member, team])
+            })
+            .then(([date, member, team]) => {
+              res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'Invalid date of birth.' })
+            })
+            .catch(err => {
+              console.log(err)
+              next(new Error(err))
+            })
   }
   if (req.body.teamHead == 'Yes' && req.body.team == 'Team Not Assigned') {
     Member.findOne({ $and: [{ teamHead: 'Yes' }, { team: req.body.team }, { companyId: req.session.companyId }] })

@@ -1,0 +1,54 @@
+<%- include('../includes/start.ejs') %>
+
+<title>Assign Task</title>
+</head>
+
+<%- include('../includes/header.ejs') %>
+
+<main style="width: device-width">
+  <table style="width: 100%; z-index: 15000;">
+    <tbody style="width: 100%">
+      <tr>
+
+        <%- include('../includes/head-side-bar.ejs') %>
+
+
+        <td style="text-align: center; padding-top: 15px">
+          <h1>Assign Task</h1>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <form style="padding: 20px" action="/associate/team-head/create-task" method="POST" enctype="multipart/form-data" id="form">
+            <% if (err) { %>
+              <div class="alert alert-danger" role="alert" style="margin: 0px;padding:10px; text-align: center">
+                  <%= err %>
+              </div>
+            <% } %>
+            <div class="form-group">
+              <label for="taskTitle"><abbr title="Required" style="text-decoration: none">* </abbr>Task Title</label>
+              <input type="text" class="form-control" id="taskTitle" name="taskTitle" placeholder="Enter Task Title" required>
+            </div>
+            <div class="form-group">
+              <label for="taskDesc"><abbr title="Required" style="text-decoration: none">* </abbr>Task Description</label>
+              <input type="text" class="form-control" id="taskDesc" name="taskDesc"
+                placeholder="Enter Task Description" required>
+            </div>
+            <div class="form-group">
+              <label for="deadLine"><abbr title="Required" style="text-decoration: none">* </abbr>Deadline</label>
+              <input type="date" class="form-control" id="deadLine" name="deadLine" aria-describedby="dobHelp"
+                placeholder="Select a deadline">
+            </div>
+            <input type="hidden" name="assignedToId" value="<%= assignedToId %>">
+            <input type="hidden" name="assignedToName" value="<%= assignedToName %>">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button type="submit" class="btn btn-primary"
+              style="margin-top: 15px; align-items: center; text-align: center">Submit</button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+<%- include('../includes/end.ejs') %>

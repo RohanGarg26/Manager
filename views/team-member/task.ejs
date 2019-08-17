@@ -1,0 +1,54 @@
+<%- include('../includes/start.ejs') %>
+<title>Assign Task</title>
+</head>
+
+<%- include('../includes/header.ejs') %>
+
+<main style="width: device-width">
+  <table style="width: 100%; z-index: 15000;">
+    <tbody style="width: 100%">
+      <tr>
+
+        <%- include('../includes/member-side-bar.ejs') %>
+
+
+        <td style="text-align: center; padding-top: 15px">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <form action="/associate/team-head/view-assigned-tasks/pending" method="get" style="padding: 0px;margin:0px">
+            <button type="submit" class="btn btn-secondary <%= path === '/team-head/view-assigned-tasks/pending'? 'active':'' %>">Pending</button>
+            </form>
+            <form action="/associate/team-head/view-assigned-tasks/completed" method="get" style="padding: 0px;margin:0px">
+            <button type="submit" class="btn btn-secondary <%= path === '/team-head/view-assigned-tasks/completed'? 'active':'' %>">Completed</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <% for(let t of task) { %>
+            <% if (path === '/team-member/task/pending' && t.dateOfCompletion==null){ %>
+          <div class="card">
+            <h5 class="card-header"><%= t.taskTitle %></h5>
+            <div class="card-body">
+              <h5 class="card-title"><%= t.deadLine %></h5>
+              <p class="card-text"><%= t.taskDesc %></p>
+            </div>
+          </div>
+          <% } %>
+          <% if (path === '/team-member/task/completed' && t.dateOfCompletion!=null){ %>
+            <div class="card">
+              <h5 class="card-header"><%= t.taskTitle %></h5>
+              <div class="card-body">
+                <h5 class="card-title"><%= t.deadLine %></h5>
+                <p class="card-text"><%= t.taskDesc %></p>
+              </div>
+            </div>
+            <% } %>
+          <% } %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+<%- include('../includes/end.ejs') %>
