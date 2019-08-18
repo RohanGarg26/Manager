@@ -63,7 +63,7 @@
           <% if (path === '/team-head/my-tasks/pending' && t.dateOfCompletion==null){ %>
           <% flag = true%>
           <div class="card <%= date > dl? 'red':'black' %>" style="margin: 20px">
-            <h5 class="card-header">Assigned To: <%= t.assignedToName%></h5>
+            <h5 class="card-header">Assigned By: <%= t.assigneeName%></h5>
             <div class="card-body">
               <h5 class="card-title" style="text-align: center"> <%= t.taskTitle %></h5>
               <h5 class="card-title">Deadline: <%= dl %></h5>
@@ -84,7 +84,7 @@
           <% let dc = new Date(t.dateOfCompletion).toISOString().split('T')[0]%>
           <% flag = true%>
           <div class="card <%= dc > dl ? 'yellow':'green' %>" style="margin: 20px">
-            <h5 class="card-header">Assigned To: <%= t.assignedToName%></h5>
+            <h5 class="card-header">Assigned By: <%= t.assigneeName%></h5>
             <div class="card-body">
               <h5 class="card-title" style="text-align: center"> <%= t.taskTitle %></h5>
               <div class="d-flex">

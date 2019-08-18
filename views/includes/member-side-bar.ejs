@@ -3,8 +3,8 @@
       <div class="row sticky-top" style="padding-left: 15px">
         <div class="col-3 w-100 p-3">
           <div class="nav flex-column nav-pills w-100 p-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <a class="nav-link btn btn-outline-success <%= path === 'team-head/team-member/task'? 'active' :' '%>" id="v-pills-home-tab"
-              data-toggle="pill" href="/associate/team-member/task/pending" role="tab" aria-controls="v-pills-home" aria-selected="true"
+            <a class="nav-link btn btn-outline-success <%= path === '/team-member/tasks/pending' || path === '/team-member/tasks/completed'? 'active' :' '%>" id="v-pills-home-tab"
+              data-toggle="pill" href="/associate/team-member/tasks/pending" role="tab" aria-controls="v-pills-home" aria-selected="true"
               style="margin-top: 4px">Team Members</a>
             <form action="/associate/logout" method="POST" style="padding: 0px;margin: 0px;">
               <input type="hidden" name="_csrf" value="<%= csrfToken %>">
