@@ -6,7 +6,7 @@ module.exports = {
     return io;
   },
   getIo: () => {
-    if(!io){
+    if (!io) {
       throw new Error('socket.io not connected')
     }
     return io

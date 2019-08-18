@@ -48,10 +48,10 @@ router.post('/add-member', authMiddleware.isAuth, [ //validations
         })
     })
     .trim(),
-  body(['lastNmae','firstName','jobTitle'],'Job title,First and Last name can have a maximum of 15 letters each')
-    .isLength({max:15}),
+  body(['lastNmae', 'firstName', 'jobTitle'], 'Job title,First and Last name can have a maximum of 15 letters each')
+    .isLength({ max: 15 }),
   check('jobDesc')
-    .isLength({max:60})
+    .isLength({ max: 60 })
     .withMessage('Job title can have a maximum of 60 letters.')
 ], adminController.postAddMember)
 
@@ -64,8 +64,8 @@ router.get('/add-team', authMiddleware.isAuth, adminController.getAddTeam)
 
 router.post('/add-team', authMiddleware.isAuth, [ //validations
   check('team')
-  .isLength({max:25})
-  .withMessage('Team name can have a maximum of 25 letters.')
+    .isLength({ max: 25 })
+    .withMessage('Team name can have a maximum of 25 letters.')
     .custom((value, { req }) => {
       return Team.findOne({ team: value })
         .then(team => {
@@ -74,8 +74,8 @@ router.post('/add-team', authMiddleware.isAuth, [ //validations
           }
         })
     }),
-    check('teamDesc')
-    .isLength({max:60})
+  check('teamDesc')
+    .isLength({ max: 60 })
     .withMessage('Team description can have a maximum of 60 letters'),
   body(['team', 'teamDesc'])
     .not()

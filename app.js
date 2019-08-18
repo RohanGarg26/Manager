@@ -11,7 +11,6 @@ const csrf = require('csurf')
 const helmet = require('helmet')
 const compression = require('compression')
 const morgan = require('morgan')
-const http = require('http')
 
 //importing routes
 const authRoutes = require('./routes/auth')
@@ -114,11 +113,19 @@ app.use((req, res, next) => { //to set response locals required to toggle compan
 app.use('/associate/team-head', teamHeadRoutes.routes)
 app.use('/associate/team-member', teamMemberRoutes.routes)
 
-404
+//404
 app.use('/', (req, res, next) => {
   if (req.session.DMisLoggedIn) {
     res.status(404)
-    res.render('404', { auth: 'true' })
+    res.render('404', { auth: 'DM' })
+  }
+  if (req.session.TMisLoggedIn) {
+    res.status(404)
+    res.render('404', { auth: 'TM' })
+  }
+  if (req.session.THisLoggedIn) {
+    res.status(404)
+    res.render('404', { auth: 'TH' })
   }
   else {
     res.status(404)
@@ -126,12 +133,22 @@ app.use('/', (req, res, next) => {
   }
 })
 
-500
+//500
 app.use('/', (error, req, res, next) => {
   if (req.session.DMisLoggedIn) {
     console.log(error)
     res.status(500)
-    res.render('500', { auth: 'true' })
+    res.render('500', { auth: 'DM' })
+  }
+  if (req.session.TMisLoggedIn) {
+    console.log(error)
+    res.status(500)
+    res.render('500', { auth: 'TM' })
+  }
+  if (req.session.THisLoggedIn) {
+    console.log(error)
+    res.status(500)
+    res.render('500', { auth: 'TH' })
   }
   else {
     console.log(error)

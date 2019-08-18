@@ -564,7 +564,6 @@ exports.postEditMember = (req, res, next) => {
       })
   }
   else if (req.body.teamHead == 'Yes' && req.body.team != 'Team Not Assigned') {
-
     Member.findOne({ $and: [{ teamHead: 'Yes' }, { team: req.body.team }, { companyId: req.session.companyId }] })
       .then(member => {
 

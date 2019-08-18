@@ -72,7 +72,6 @@ exports.getSignUpForm = (req, res, next) => {
   })
 }
 
-
 //signup
 exports.postSignup = (req, res, next) => {
   const errors = validationResult(req)

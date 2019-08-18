@@ -39,7 +39,7 @@ exports.postCompleteTask = (req, res, next) => {
     })
     .then(task => {
       let socket = io.getIo()
-      socket.emit('tasks',{action: 'complete', assigneeId: req.body.assigneeId})
+      socket.emit('tasks', { action: 'complete', assigneeId: req.body.assigneeId })
       res.redirect('/associate/team-member/tasks/completed')
     })
     .catch(err => {

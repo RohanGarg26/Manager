@@ -8,9 +8,8 @@ const teamMemberController = require('../controllers/team-member')
 
 const memberAuthMiddleware = require('../middlewares/memberIsAuth')
 
-router.get('/tasks/:status',memberAuthMiddleware.memberIsAuth,teamMemberController.getTask)
+router.get('/tasks/:status', memberAuthMiddleware.teamMemberIsAuth, teamMemberController.getTask)
 
-router.post('/complete-task', memberAuthMiddleware.memberIsAuth, teamMemberController.postCompleteTask)
-
+router.post('/complete-task', memberAuthMiddleware.teamMemberIsAuth, teamMemberController.postCompleteTask)
 
 exports.routes = router

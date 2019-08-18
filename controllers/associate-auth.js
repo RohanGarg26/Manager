@@ -3,7 +3,7 @@ const { validationResult } = require('express-validator')
 
 const Member = require('../model/member')
 
-exports.postAssociateLogin = (req,res,next) => {
+exports.postAssociateLogin = (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     //console.log(errors.array())
@@ -18,7 +18,12 @@ exports.postAssociateLogin = (req,res,next) => {
     })
     .then(([match, member]) => {
       if (match) {
-        req.session.AMisLoggedIn = true;
+        if (member.teamHead == 'Yes') {
+          req.session.THisLoggedIn = true;
+        }
+        else if (member.teamHead == 'No') {
+          req.session.TMisLoggedIn = true;
+        }
         req.session.member = member;
         req.session.save()
       }
@@ -30,11 +35,11 @@ exports.postAssociateLogin = (req,res,next) => {
       }
     })
     .then(session => {
-      if(req.session.member.teamHead === 'Yes'){
+      if (req.session.member.teamHead === 'Yes') {
         res.redirect('/associate/team-head/team-members')
       }
-      else if(req.session.member.teamHead === 'No'){
-        res.redirect('/associate/team-member/task/pending')
+      else if (req.session.member.teamHead === 'No') {
+        res.redirect('/associate/team-member/tasks/pending')
       }
     })
     .catch(err => {
@@ -43,7 +48,7 @@ exports.postAssociateLogin = (req,res,next) => {
     })
 }
 
-exports.logout = (req,res,next) => {
+exports.logout = (req, res, next) => {
   req.session.destroy(err => {
     res.redirect('/login')
   })

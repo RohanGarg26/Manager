@@ -3,19 +3,19 @@
     <div class="row sticky-top" style="padding-left: 15px">
       <div class="col-3 w-100 p-3">
         <div class="nav flex-column nav-pills w-100 p-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-          <a class="nav-link btn btn-outline-success <%= path === 'team-head/team-members'? 'active' :' '%>" id="v-pills-home-tab"
-            data-toggle="pill" href="/associate/team-head/team-members" role="tab" aria-controls="v-pills-home" aria-selected="true"
-            style="margin-top: 4px">Team Members</a>
-          <a class="nav-link btn btn-outline-success <%= path === 'team-head/all-heads'? 'active' :' '%>" id="v-pills-profile-tab"
-            data-toggle="pill" href="/associate/team-head/all-heads" role="tab" aria-controls="v-pills-profile" aria-selected="false"
-            style="margin-top: 4px">Team Heads</a>
-            <a class="nav-link btn btn-outline-warning <%= path === '/team-head/view-assigned-tasks/pending' || path === '/team-head/view-assigned-tasks/completed' ? 'active' :' '%>" id="v-pills-profile-tab"
-              data-toggle="pill" href="/associate/team-head/view-assigned-tasks/pending" role="tab" aria-controls="v-pills-profile" aria-selected="false"
-              style="margin-top: 4px">Assigned Tasks</a>
-              <a class="nav-link btn btn-outline-danger <%= path === '/team-head/my-tasks/pending' || path === '/team-head/my-tasks/completed' ? 'active' :' '%>" id="v-pills-profile-tab"
-                data-toggle="pill" href="/associate/team-head/my-tasks/pending" role="tab" aria-controls="v-pills-profile" aria-selected="false"
-                style="margin-top: 4px; height: 42px;">My Tasks</a>
-          <form action="/associate/logout" method="POST" style="padding: 0px;margin: 0px;">
+          <a class="nav-link btn btn-outline-success <%= path === 'team-head/team-members'? 'active' :' '%>"
+            id="v-pills-home-tab" data-toggle="pill" href="/associate/team-head/team-members" role="tab"
+            aria-controls="v-pills-home" aria-selected="true" style="margin-top: 4px">Team Members</a>
+          <a class="nav-link btn btn-outline-success <%= path === 'team-head/all-heads'? 'active' :' '%>"
+            id="v-pills-profile-tab" data-toggle="pill" href="/associate/team-head/all-heads" role="tab"
+            aria-controls="v-pills-profile" aria-selected="false" style="margin-top: 4px">Team Heads</a>
+          <a class="nav-link btn btn-outline-warning <%= path === '/team-head/view-assigned-tasks/pending' || path === '/team-head/view-assigned-tasks/completed' ? 'active' :' '%>"
+            id="v-pills-profile-tab" data-toggle="pill" href="/associate/team-head/view-assigned-tasks/pending"
+            role="tab" aria-controls="v-pills-profile" aria-selected="false" style="margin-top: 4px">Assigned Tasks</a>
+          <a class="nav-link btn btn-outline-danger <%= path === '/team-head/my-tasks/pending' || path === '/team-head/my-tasks/completed' ? 'active' :' '%>"
+            id="v-pills-profile-tab" data-toggle="pill" href="/associate/team-head/my-tasks/pending" role="tab"
+            aria-controls="v-pills-profile" aria-selected="false" style="margin-top: 4px; height: 42px;">My Tasks</a>
+          <form action="/associate/team-head/logout" method="POST" style="padding: 0px;margin: 0px;">
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button type="submit" class="btn btn-outline-dark btn-block" style="margin-top:4px">Logout</button>
           </form>

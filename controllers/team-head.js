@@ -4,7 +4,6 @@ const Member = require('../model/member')
 const Task = require('../model/task')
 
 const io = require('../utils/socket')
-const ioClient = require('socket.io-client')
 
 exports.getTeamMembers = (req, res, next) => {
   Member.countDocuments({

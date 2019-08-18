@@ -48,6 +48,6 @@ router.post('/signup', [  //vlidations
     .not().isEmpty({ ignore_whitespace: true })
 ], authController.postSignup)
 
-router.post('/logout',isAuthMiddleware.isAuth, authController.logout)
+router.post('/logout', isAuthMiddleware.isAuth, authController.logout)
 
 exports.routes = router

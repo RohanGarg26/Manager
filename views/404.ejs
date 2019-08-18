@@ -7,7 +7,8 @@
 
 <main
   style="background-image: url('/images/error-404.png'); background-repeat: no-repeat; width: 100%; height: 80vh;background-position: center;">
-  <a href="<%= auth == 'true' ? '/teams':'/login' %>" class="btn btn-secondary btn-lg" style="position: absolute; top: 71.5%; left:40%;width: 20%">Head Home</a>
+  <a href="<%= (auth == 'DM') ? '/teams':(auth == 'TH')?'/associate/team-head/team-members':(auth == 'TM')?'/associate/team-member/tasks/pending':'/login' %>"
+    class="btn btn-secondary btn-lg" style="position: absolute; top: 71.5%; left:40%;width: 20%">Head Home</a>
 </main>
 
 <%- include('includes/footer.ejs') %>

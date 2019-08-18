@@ -27,42 +27,45 @@
 
       <tr>
         <% if(count==0){ %>
-        <td>
-          <h3 style="text-align: center">NO TEAMS EXIST</h3>
-          <div class="card" style="width: 280px; height:400px;">
-            <img src="/images/add-team.png" class="card-img-top" alt="add-new member"
-              style="width: 278px; height: 300px; margin-top: 20px" title="Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0">
-            <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
-              Team</a>
-          </div>
-        </td>
+          <td>
+            <h3 style="text-align: center">NO TEAMS EXIST</h3>
+            <div class="card" style="width: 280px; height:400px;">
+              <img src="/images/add-team.png" class="card-img-top" alt="add-new member"
+                style="width: 278px; height: 300px; margin-top: 20px"
+                title="Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0">
+              <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
+                Team</a>
+            </div>
+          </td>
         <% } %>
         <% if(count>0){ %>
-        <td style="display: grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); grid-gap: 20px;">
-          <% for (let t of team) { %>
-          <div class="card" style="width: 280px; height:400px;">
-            <img src="/<%= t.imageUrl %>" class="card-img-top" alt="member's image" style="width: 278px; height: 225px" title="<%= t.imageUrl == 'images/default-team.png'?'Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0':'' %>">
-            <div class="card-body" style="text-align: center">
-              <h5 class="card-title"><%= t.team %></h5>
-              <p class="card-text"><%= t.teamDesc %></p>
+          <td style="display: grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); grid-gap: 20px;">
+            <% for (let t of team) { %>
+              <div class="card" style="width: 280px; height:400px;">
+                <img src="/<%= t.imageUrl %>" class="card-img-top" alt="member's image" style="width: 278px; height: 225px"
+                  title="<%= t.imageUrl == 'images/default-team.png'?'Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0':'' %>">
+                <div class="card-body" style="text-align: center">
+                  <h5 class="card-title"><%= t.team %></h5>
+                  <p class="card-text"><%= t.teamDesc %></p>
+                </div>
+                <div style="margin: auto; margin-bottom: 10px;">
+                  <a href="/teams/<%= t._id %>" class="btn btn-primary" style="margin-right: 5px">Team
+                    Members</a>
+                  <form method="POST" action="/team/delete/<%= t._id %>"
+                    style="padding: 0px; margin: 0px; display: inline;">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-primary">Remove Team</button>
+                  </form>
+                </div>
+              </div>
+            <% } %>
+            <div class="card" style="width: 280px; height:400px;">
+              <img src="/images/add-team.png" class="card-img-top" alt="add-new member"
+                style="width: 278px; height: 300px; margin-top: 20px"
+                title="Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0">
+              <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
+                Team</a>
             </div>
-            <div style="margin: auto; margin-bottom: 10px;">
-              <a href="/teams/<%= t._id %>" class="btn btn-primary" style="margin-right: 5px">Team
-                Members</a>
-              <form method="POST" action="/team/delete/<%= t._id %>"
-                style="padding: 0px; margin: 0px; display: inline;">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <button type="submit" class="btn btn-primary">Remove Team</button>
-              </form>
-            </div>
-          </div>
-          <% } %>
-          <div class="card" style="width: 280px; height:400px;">
-            <img src="/images/add-team.png" class="card-img-top" alt="add-new member"
-              style="width: 278px; height: 300px; margin-top: 20px" title="Icons made by https://www.flaticon.com/authors/freepik Freepik from https://www.flaticon.com/ messages.attribution.is_licensed_by CC 3.0">
-            <a href="/add-team" class="btn btn-primary" style="margin: auto; margin-bottom: 10px">Add New
-              Team</a>
-          </div>
         </td>
         <% } %>
       </tr>

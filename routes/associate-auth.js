@@ -10,7 +10,7 @@ const associateAuthController = require('../controllers/associate-auth')
 
 const memberAuthMiddleware = require('../middlewares/memberIsAuth')
 
-router.post('/login',[  //validations
+router.post('/login', [  //validations
   check('email')
     .isEmail()
     .withMessage('Please enter a valid Email Address.')
@@ -26,8 +26,9 @@ router.post('/login',[  //validations
   body('password', 'Password is invalid.')
     .isLength({ min: 10, max: 10 })
     .trim()
-],associateAuthController.postAssociateLogin)
+], associateAuthController.postAssociateLogin)
 
-router.post('/logout',memberAuthMiddleware.memberIsAuth,associateAuthController.logout)
+router.post('/team-head/logout', memberAuthMiddleware.teamHeadIsAuth, associateAuthController.logout)
+router.post('/team-member/logout', memberAuthMiddleware.teamMemberIsAuth, associateAuthController.logout)
 
 exports.routes = router
