@@ -1,6 +1,6 @@
 <%- include('../includes/start.ejs') %>
 
-<title>Assigned Task</title>
+<title>My Task</title>
 <style>
   .black {
     border-color: #5d615d;
@@ -21,7 +21,6 @@
     border-color: #28ed39;
     border-width: 3px;
   }
-
   .hide {
     display: none;
     overflow: hidden;
@@ -41,19 +40,18 @@
 
         <td style="text-align: center; padding-top: 15px">
           <div class="btn-group" role="group" aria-label="Basic example">
-            <form action="/associate/team-head/view-assigned-tasks/pending" method="get"
-              style="padding: 0px;margin:0px">
+            <form action="/associate/team-head/my-tasks/pending" method="get" style="padding: 0px;margin:0px">
               <button type="submit" style="margin-right: -2px"
-                class="btn btn-secondary <%= path === '/team-head/view-assigned-tasks/pending'? 'active':'' %>">Pending</button>
+                class="btn btn-secondary <%= path === '/team-head/my-tasks/pending'? 'active':'' %>">Pending</button>
             </form>
-            <form action="/associate/team-head/view-assigned-tasks/completed" method="get"
-              style="padding: 0px;margin:0px">
+            <form action="/associate/team-head/my-tasks/completed" method="get" style="padding: 0px;margin:0px">
               <button type="submit"
                 style="margin-left: -2px; border-top-left-radius: 0px;border-bottom-left-radius: 0px "
-                class="btn btn-secondary <%= path === '/team-head/view-assigned-tasks/completed'? 'active':'' %>">Completed</button>
+                class="btn btn-secondary <%= path === '/team-head/my-tasks/completed'? 'active':'' %>">Completed</button>
             </form>
           </div>
-          <div class="alert hide" role="alert" style="margin: 20px 20px 0px 20px" id="collapse">o</div>
+          <div class="alert hide" role="alert" style="margin: 20px 20px 0px 20px" id="collapse">
+          </div>
         </td>
       </tr>
 
@@ -62,7 +60,7 @@
           <% let flag %>
           <% for(let t of task) { %>
           <% let dl = new Date(t.deadLine).toISOString().split('T')[0]%>
-          <% if (path === '/team-head/view-assigned-tasks/pending' && t.dateOfCompletion==null){ %>
+          <% if (path === '/team-head/my-tasks/pending' && t.dateOfCompletion==null){ %>
           <% flag = true%>
           <div class="card <%= date > dl? 'red':'black' %>" style="margin: 20px">
             <h5 class="card-header">Assigned To: <%= t.assignedToName%></h5>
@@ -72,17 +70,17 @@
               <h6 class="card-text text-center">Task Deascription</h6>
               <p class="card-text text-center"><%= t.taskDesc %></p>
               <div class="text-center">
-                <form action="/associate/team-head/dismiss-task" method="POST" style="margin: 0px;padding:0px">
+                <form action="/associate/team-head/complete-task" method="POST" style="margin: 0px;padding:0px">
                   <input type="hidden" name="taskId" value="<%= t._id %>">
-                  <input type="hidden" name="assignedToId" value="<%= t.assignedToId %>">
+                  <input type="hidden" name="assigneeId" value="<%= t.assigneeId %>">
                   <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <button type="submit" class="btn btn-primary">Dismiss Task</button>
+                  <button type="submit" class="btn btn-primary">Mark As Completed</button>
                 </form>
               </div>
             </div>
           </div>
           <% } %>
-          <% if (path === '/team-head/view-assigned-tasks/completed' && t.dateOfCompletion!=null){ %>
+          <% if (path === '/team-head/my-tasks/completed' && t.dateOfCompletion!=null){ %>
           <% let dc = new Date(t.dateOfCompletion).toISOString().split('T')[0]%>
           <% flag = true%>
           <div class="card <%= dc > dl ? 'yellow':'green' %>" style="margin: 20px">
@@ -96,12 +94,6 @@
               <h6 class="card-text text-center">Task Deascription</h6>
               <p class="card-text text-center"><%= t.taskDesc %></p>
               <div class="text-center">
-                <form action="/associate/team-head/dismiss-task" method="POST" style="margin: 0px;padding:0px">
-                  <input type="hidden" name="taskId" value="<%= t._id %>">
-                  <input type="hidden" name="assignedToId" value="<%= t.assignedToId %>">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <button type="submit" class="btn btn-primary">Remove Task</button>
-                </form>
               </div>
             </div>
             <% } %>
@@ -113,6 +105,6 @@
       </tr>
     </tbody>
   </table>
+  <%- include('../includes/socket-alert.ejs') %>
 </main>
-<%- include('../includes/socket-alert.ejs') %>
 <%- include('../includes/end.ejs') %>

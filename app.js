@@ -104,32 +104,41 @@ app.use((req, res, next) => { //to set response locals required to toggle compan
 
 app.use(adminRoutes.routes)
 
+app.use((req, res, next) => { //to set response locals required to toggle company-details
+  if (req.session.member) {
+    res.locals.memberId = req.session.member._id
+  }
+  next()
+})
+
 app.use('/associate/team-head', teamHeadRoutes.routes)
 app.use('/associate/team-member', teamMemberRoutes.routes)
 
-//404
-// app.use('/', (req, res, next) => {
-//   if (req.session.DMisLoggedIn) {
-//     res.status(404)
-//     res.render('404', { auth: 'true' })
-//   }
-//   else {
-//     res.status(404)
-//     res.render('404', { auth: 'false' })
-//   }
-// })
+404
+app.use('/', (req, res, next) => {
+  if (req.session.DMisLoggedIn) {
+    res.status(404)
+    res.render('404', { auth: 'true' })
+  }
+  else {
+    res.status(404)
+    res.render('404', { auth: 'false' })
+  }
+})
 
-//500
-// app.use('/', (error, req, res, next) => {
-//   if (req.session.DMisLoggedIn) {
-//     res.status(500)
-//     res.render('500', { auth: 'true' })
-//   }
-//   else {
-//     res.status(500)
-//     res.render('500', { auth: 'false' })
-//   }
-// })
+500
+app.use('/', (error, req, res, next) => {
+  if (req.session.DMisLoggedIn) {
+    console.log(error)
+    res.status(500)
+    res.render('500', { auth: 'true' })
+  }
+  else {
+    console.log(error)
+    res.status(500)
+    res.render('500', { auth: 'false' })
+  }
+})
 
 //connecting to mongoose database
 mongoose.connect(`${process.env.mongoString}`, { useNewUrlParser: true })

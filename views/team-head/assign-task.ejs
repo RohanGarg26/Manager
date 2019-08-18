@@ -1,5 +1,8 @@
 <%- include('../includes/start.ejs') %>
-
+<style>  .hide {
+    display: none;
+    overflow: hidden;
+  }</style>
 <title>Assign Task</title>
 </head>
 
@@ -15,7 +18,10 @@
 
         <td style="text-align: center; padding-top: 15px">
           <h1>Assign Task</h1>
+          <div class="alert hide" role="alert" style="margin: 20px 20px 0px 20px" id="collapse">
+            </div>
         </td>
+        
       </tr>
 
       <tr>
@@ -50,5 +56,6 @@
       </tr>
     </tbody>
   </table>
+  <%- include('../includes/socket-alert.ejs') %>
 </main>
 <%- include('../includes/end.ejs') %>

@@ -125,21 +125,20 @@ exports.postAddMember = (req, res, next) => {
         next(new Error(err))
       })
   }
-  if(req.body.dob >= new Date().toISOString().split('T')[0])
-  {
+  if (req.body.dob >= new Date().toISOString().split('T')[0]) {
     Team.find({ companyId: req.session.companyId })
-            .then(team => {
-              return res.status(422).render('add-member', {
-                err: 'Invalid date of birth.',
-                path: '',
-                edit: 'false',
-                team: team
-              })
-            })
-            .catch(err => {
-              console.log(err)
-              next(new Error(err))
-            })
+      .then(team => {
+        return res.status(422).render('add-member', {
+          err: 'Invalid date of birth.',
+          path: '',
+          edit: 'false',
+          team: team
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        next(new Error(err))
+      })
   }
   else if (req.body.teamHead == 'Yes' && req.body.team != 'Team Not Assigned') { //validation
     Member.findOne({ $and: [{ teamHead: 'Yes' }, { team: req.body.team }, { companyId: req.session.companyId }] })
@@ -175,67 +174,67 @@ exports.postAddMember = (req, res, next) => {
           })
       })
   }
+
+  let image
+  if (req.file) {
+    const img = req.file
+    image = img.path
+  }
   else {
-    let image
-    if (req.file) {
-      const img = req.file
-      image = img.path
-    }
-    else {
-      image = 'images/default-member.png'
-    }
-    const pass = password.randomPassword({ length: 10, characters: [password.lower, password.upper, password.digits, password.symbols] })
-    bcrypt.hash(pass, 12)
-      .then(hashedPass => {
-        return Promise.all([Team.findOne({
-          $and: [
-            { team: req.body.team },
-            { companyId: req.session.companyId }
-          ]
-        }), hashedPass])  //finding the teams to be displayed in the views for selection
-      })
-      .then(([team, hashedPass]) => {
-        if (req.body.team != 'Team Not Assigned') {  //if a team was selected in the form
-          return new Member({  //creating a new document with details added by the user in the forn
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            dob: req.body.dob,
-            address: req.body.address,
-            emailId: req.body.emailId,
-            imageUrl: image,
-            jobTitle: req.body.jobTitle,
-            jobDesc: req.body.jobDesc,
-            team: req.body.team,
-            companyId: req.session.companyId,
-            teamId: team._id,
-            teamHead: req.body.teamHead,
-            password: hashedPass
-          }, { versionKey: false }).save()
-        }
-        else {  //if a team was not selected in the form
-          return new Member({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            dob: req.body.dob,
-            address: req.body.address,
-            emailId: req.body.emailId,
-            imageUrl: image,
-            jobTitle: req.body.jobTitle,
-            jobDesc: req.body.jobDesc,
-            team: req.body.team,
-            companyId: req.session.companyId,
-            teamId: new mongoose.Types.ObjectId('000000000000000000000000'),
-            teamHead: 'No',
-            password: hashedPass
-          }, { versionKey: false }).save()
-        }
-      })
-      .then(member => {
-        return transporter.sendMail({
-          to: `${req.body.emailId}`,
-          from: 'Manager',
-          subject: 'Welcome to the Manager',
-          html: `
+    image = 'images/default-member.png'
+  }
+  const pass = password.randomPassword({ length: 10, characters: [password.lower, password.upper, password.digits, password.symbols] })
+  bcrypt.hash(pass, 12)
+    .then(hashedPass => {
+      return Promise.all([Team.findOne({
+        $and: [
+          { team: req.body.team },
+          { companyId: req.session.companyId }
+        ]
+      }), hashedPass])  //finding the teams to be displayed in the views for selection
+    })
+    .then(([team, hashedPass]) => {
+      if (req.body.team != 'Team Not Assigned') {  //if a team was selected in the form
+        return new Member({  //creating a new document with details added by the user in the forn
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          dob: req.body.dob,
+          address: req.body.address,
+          emailId: req.body.emailId,
+          imageUrl: image,
+          jobTitle: req.body.jobTitle,
+          jobDesc: req.body.jobDesc,
+          team: req.body.team,
+          companyId: req.session.companyId,
+          teamId: team._id,
+          teamHead: req.body.teamHead,
+          password: hashedPass
+        }, { versionKey: false }).save()
+      }
+      else {  //if a team was not selected in the form
+        return new Member({
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          dob: req.body.dob,
+          address: req.body.address,
+          emailId: req.body.emailId,
+          imageUrl: image,
+          jobTitle: req.body.jobTitle,
+          jobDesc: req.body.jobDesc,
+          team: req.body.team,
+          companyId: req.session.companyId,
+          teamId: new mongoose.Types.ObjectId('000000000000000000000000'),
+          teamHead: 'No',
+          password: hashedPass
+        }, { versionKey: false }).save()
+      }
+    })
+    .then(member => {
+      return transporter.sendMail({
+        to: `${req.body.emailId}`,
+        from: 'Manager',
+        subject: 'Welcome to the Manager',
+        html: `
               <body>
               <p>Hello ${ req.body.firstName}</p>
               <p>You've been added to Manager by your company</p>
@@ -248,17 +247,17 @@ exports.postAddMember = (req, res, next) => {
               <p>Have a great experience!!!</p>
               </body>
               `
-        })
       })
-      .then(() => {
-        res.redirect('/members')
-      })
-      .catch(err => {
-        console.log(err)
-        next(new Error(err))
-      })
-  }
+    })
+    .then(() => {
+      res.redirect('/members')
+    })
+    .catch(err => {
+      console.log(err)
+      next(new Error(err))
+    })
 }
+
 
 //add-member
 exports.getAddMember = (req, res, next) => {
@@ -481,7 +480,7 @@ exports.postEditMember = (req, res, next) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     //console.log(errors.array())
-    Team.find({ companyId: req.session.companyId }) 
+    Team.find({ companyId: req.session.companyId })
       .then(team => {
         //console.log(req.params.memberId)
         return Promise.all([Member.findOne({
@@ -492,7 +491,7 @@ exports.postEditMember = (req, res, next) => {
         }), team])
       })
       .then(([member, team]) => {
-        return Promise.all([Member.aggregate([ 
+        return Promise.all([Member.aggregate([
           {
             $project: {
               dob: { $dateToString: { format: "%Y-%m-%d", date: "$dob" } }
@@ -508,70 +507,36 @@ exports.postEditMember = (req, res, next) => {
         next(new Error(err))
       })
   }
-  if(req.body.dob >= new Date().toISOString().split('T')[0])
-  {
-    Team.find({ companyId: req.session.companyId }) 
-            .then(team => {
-              //console.log(req.params.memberId)
-              return Promise.all([Member.findOne({
-                $and: [
-                  { _id: req.params.memberId },
-                  { companyId: req.session.companyId }
-                ]
-              }), team])
-            })
-            .then(([member, team]) => {
-              return Promise.all([Member.aggregate([  
-                {
-                  $project: {
-                    dob: { $dateToString: { format: "%Y-%m-%d", date: "$dob" } }
-                  }
-                }
-              ]), member, team])
-            })
-            .then(([date, member, team]) => {
-              res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'Invalid date of birth.' })
-            })
-            .catch(err => {
-              console.log(err)
-              next(new Error(err))
-            })
-  }
-  if (req.body.teamHead == 'Yes' && req.body.team == 'Team Not Assigned') {
-    Member.findOne({ $and: [{ teamHead: 'Yes' }, { team: req.body.team }, { companyId: req.session.companyId }] })
-      .then(member => {
-        if (member) {
-          Team.find({ companyId: req.session.companyId }) 
-            .then(team => {
-              //console.log(req.params.memberId)
-              return Promise.all([Member.findOne({
-                $and: [
-                  { _id: req.params.memberId },
-                  { companyId: req.session.companyId }
-                ]
-              }), team])
-            })
-            .then(([member, team]) => {
-              return Promise.all([Member.aggregate([  
-                {
-                  $project: {
-                    dob: { $dateToString: { format: "%Y-%m-%d", date: "$dob" } }
-                  }
-                }
-              ]), member, team])
-            })
-            .then(([date, member, team]) => {
-              res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'The selected team already has a Team Head' })
-            })
-            .catch(err => {
-              console.log(err)
-              next(new Error(err))
-            })
-        }
+  if (req.body.dob >= new Date().toISOString().split('T')[0]) {
+    Team.find({ companyId: req.session.companyId })
+      .then(team => {
+        //console.log(req.params.memberId)
+        return Promise.all([Member.findOne({
+          $and: [
+            { _id: req.params.memberId },
+            { companyId: req.session.companyId }
+          ]
+        }), team])
+      })
+      .then(([member, team]) => {
+        return Promise.all([Member.aggregate([
+          {
+            $project: {
+              dob: { $dateToString: { format: "%Y-%m-%d", date: "$dob" } }
+            }
+          }
+        ]), member, team])
+      })
+      .then(([date, member, team]) => {
+        res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'Invalid date of birth.' })
+      })
+      .catch(err => {
+        console.log(err)
+        next(new Error(err))
       })
   }
   else if (req.body.team == 'Team Not Assigned' && req.body.teamHead == 'Yes') {
-    Team.find({ companyId: req.session.companyId }) 
+    Team.find({ companyId: req.session.companyId })
       .then(team => {
         //console.log(req.params.memberId)
         return Promise.all([Member.findOne({
@@ -598,99 +563,142 @@ exports.postEditMember = (req, res, next) => {
         next(new Error(err))
       })
   }
+  else if (req.body.teamHead == 'Yes' && req.body.team != 'Team Not Assigned') {
+
+    Member.findOne({ $and: [{ teamHead: 'Yes' }, { team: req.body.team }, { companyId: req.session.companyId }] })
+      .then(member => {
+
+        if (member) {
+          Team.find({ companyId: req.session.companyId })
+            .then(team => {
+              //console.log(req.params.memberId)
+              return Promise.all([Member.findOne({
+                $and: [
+                  { _id: req.params.memberId },
+                  { companyId: req.session.companyId }
+                ]
+              }), team])
+            })
+            .then(([member, team]) => {
+              return Promise.all([Member.aggregate([
+                {
+                  $project: {
+                    dob: { $dateToString: { format: "%Y-%m-%d", date: "$dob" } }
+                  }
+                }
+              ]), member, team])
+            })
+            .then(([date, member, team]) => {
+              res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'The selected team already has a Team Head' })
+            })
+            .catch(err => {
+              console.log(err)
+              next(new Error(err))
+            })
+        }
+
+
+
+      })
+      .catch(err => {
+        console.log(err)
+        next(new Error(err))
+      })
+  }
+  const image = req.file
+  let img
+  if (image) {
+    img = image.path
+  }
   else {
-    const image = req.file
-    let img
-    if (image) {
-      img = image.path
-    }
-    else {
-      img = 'images/default-member.png'
-    }
-    if (req.body.team != 'Team Not Assigned') {
-      Member.findById(req.body.memberId)
-        .then(member => {
-          if (member.imageUrl) {
-            if (member.imageUrl != 'images/default-member.png') {
-              fs.unlink(String(member.imageUrl), (err) => {
-                console.log(err)
-                next(new Error(err))
-              })
-            }
+    img = 'images/default-member.png'
+  }
+  if (req.body.team != 'Team Not Assigned') {
+    console.log('happy2')
+    Member.findById(req.body.memberId)
+      .then(member => {
+        if (member.imageUrl) {
+          if (member.imageUrl != 'images/default-member.png') {
+            fs.unlink(String(member.imageUrl), (err) => {
+              console.log(err)
+              next(new Error(err))
+            })
           }
+        }
+      })
+      .then(() => {
+        return Team.findOne({
+          $and: [
+            { team: req.body.team },
+            { companyId: req.session.companyId }
+          ]
         })
-        .then(() => {
-          return Team.findOne({
-            $and: [
-              { team: req.body.team },
-              { companyId: req.session.companyId }
-            ]
-          })
-        })
-        .then(team => {
-          return Member.updateOne(
-            { _id: req.body.memberId },
-            {
-              firstName: req.body.firstName,
-              lastName: req.body.lastName,
-              dob: req.body.dob,
-              address: req.body.address,
-              emailId: req.body.emailId,
-              imageUrl: img,
-              jobTitle: req.body.jobTitle,
-              jobDesc: req.body.jobDesc,
-              team: req.body.team,
-              teamId: team._id,
-              teamHead: req.body.teamHead
-            }
-          )
-        })
-        .then(() => {
-          res.redirect('/members')
-        })
-        .catch(err => {
-          console.log(err)
-          next(new Error(err))
-        })
-    }
-    else {
-      Member.findById(req.body.memberId)
-        .then(member => {
-          if (member.imageUrl) {
-            if (member.imageUrl != 'images/default-member.png') {
-              fs.unlink(String(member.imageUrl), (err) => {
-                console.log(err)
-                next(new Error(err))
-              })
-            }
+      })
+      .then(team => {
+        return Member.updateOne(
+          { _id: req.body.memberId },
+          {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            dob: req.body.dob,
+            address: req.body.address,
+            emailId: req.body.emailId,
+            imageUrl: img,
+            jobTitle: req.body.jobTitle,
+            jobDesc: req.body.jobDesc,
+            team: req.body.team,
+            teamId: team._id,
+            teamHead: req.body.teamHead
           }
-        })
-        .then(() => {
-          return Member.updateOne(
-            { _id: req.body.memberId },
-            {
-              firstName: req.body.firstName,
-              lastName: req.body.lastName,
-              dob: req.body.dob,
-              address: req.body.address,
-              emailId: req.body.emailId,
-              imageUrl: img,
-              jobTitle: req.body.jobTitle,
-              jobDesc: req.body.jobDesc,
-              team: req.body.team,
-              teamId: new mongoose.Types.ObjectId('000000000000000000000000'),
-              teamHead: req.body.teamHead
-            }
-          )
-        })
-        .then(() => {
-          res.redirect('/members')
-        })
-        .catch(err => {
-          console.log(err)
-          next(new Error(err))
-        })
-    }
+        )
+      })
+      .then(() => {
+        res.redirect('/members')
+      })
+      .catch(err => {
+        console.log(err)
+        next(new Error(err))
+      })
+  }
+  else {
+    console.log('happy')
+    Member.findById(req.body.memberId)
+      .then(member => {
+        if (member.imageUrl) {
+          if (member.imageUrl != 'images/default-member.png') {
+            fs.unlink(String(member.imageUrl), (err) => {
+              console.log(err)
+              next(new Error(err))
+            })
+          }
+        }
+      })
+      .then(() => {
+        return Member.updateOne(
+          { _id: req.body.memberId },
+          {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            dob: req.body.dob,
+            address: req.body.address,
+            emailId: req.body.emailId,
+            imageUrl: img,
+            jobTitle: req.body.jobTitle,
+            jobDesc: req.body.jobDesc,
+            team: req.body.team,
+            teamId: new mongoose.Types.ObjectId('000000000000000000000000'),
+            teamHead: req.body.teamHead
+          }
+        )
+      })
+      .then(() => {
+        res.redirect('/members')
+      })
+      .catch(err => {
+        console.log(err)
+        next(new Error(err))
+      })
+
   }
 }
 

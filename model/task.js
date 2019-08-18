@@ -1,46 +1,46 @@
 const mongoose = require('mongoose')
 
 const taskSchema = new mongoose.Schema({
-  companyId:{
+  companyId: {
     type: mongoose.ObjectId,
     required: true
   },
-  assigneeId:{
+  assigneeId: {
     type: mongoose.ObjectId,
     required: true
   },
-  assignedToId:{
-    type:mongoose.ObjectId,
+  assignedToId: {
+    type: mongoose.ObjectId,
     require: true
   },
-  assignedToName:{
+  assignedToName: {
     type: String,
     required: true
   },
-  assigneeName:{
+  assigneeName: {
     type: String,
     required: true
   },
-  taskTitle:{
+  taskTitle: {
     type: String,
-    required:true
+    required: true
   },
-  taskDesc:{
-    type:String,
-    required:true
+  taskDesc: {
+    type: String,
+    required: true
   },
-  dateOfAssignment:{
+  dateOfAssignment: {
     type: Date,
     required: true
   },
-  deadLine:{
+  deadLine: {
     type: Date,
     required: true
   },
-  dateOfCompletion:{
+  dateOfCompletion: {
     type: Date
   },
-  completed:{
+  completed: {
     type: Boolean,
     required: true
   }

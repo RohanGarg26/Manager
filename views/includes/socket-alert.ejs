@@ -1,0 +1,24 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  let socket = io();
+  socket.on('tasks', ((data) => {
+    if ('<%= memberId %>' === data.assignedToId && data.action === 'create') {
+      var collapse = document.getElementById("collapse");
+      collapse.innerHTML = "Someone has created a new task for you :) Refresh/Visit My Tasks to view."
+      collapse.classList.add('alert-warning')
+      collapse.classList.toggle('hide')
+    }
+    if ('<%= memberId %>' === data.assignedToId && data.action === 'dismiss') {
+      var collapse = document.getElementById("collapse");
+      collapse.innerHTML = "Someone has removed a task !! Refresh/visit My Tasks to view."
+      collapse.classList.add('alert-danger')
+      collapse.classList.toggle('hide')
+    }
+    if ('<%= memberId %>' === data.assigneeId && data.action === 'complete') {
+      var collapse = document.getElementById("collapse");
+      collapse.innerHTML = "Someone has completed a task :) Refresh/visit to Assigned Tasks to view."
+      collapse.classList.add('alert-success')
+      collapse.classList.toggle('hide')
+    }
+  }))
+</script>

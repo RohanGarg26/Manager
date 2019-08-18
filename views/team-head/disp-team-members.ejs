@@ -11,6 +11,10 @@
     border-color: black;
     border-width: 3px;
   }
+  .hide {
+    display: none;
+    overflow: hidden;
+  }
 </style>
 </head>
 
@@ -33,6 +37,8 @@
             <button class="btn btn-outline-success my-2 my-sm-0" id="search" type="submit"
               style="width: 10%; padding: auto">Search</button>
           </form>
+          <div class="alert hide" role="alert" style="margin: 20px 20px 0px 20px" id="collapse">
+          </div>
         </td>
       </tr>
 
@@ -76,5 +82,6 @@
       </tr>
     </tbody>
   </table>
+  <%- include('../includes/socket-alert.ejs') %>
 </main>
 <%- include('../includes/end.ejs') %>
