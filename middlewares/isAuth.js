@@ -3,6 +3,5 @@ exports.isAuth = (req, res, next) => {
   if (!req.session.DMisLoggedIn) {
     return res.render('unauthorized-access')
   }
-  res.end()
   next()
 }

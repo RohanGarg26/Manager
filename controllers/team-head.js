@@ -36,13 +36,13 @@ exports.getTeamMembers = (req, res, next) => {
             })
           })
           .catch(err => {
-            res.end()
+            
             next(new Error(err))
           })
       }
     })
     .catch(err => {
-      res.end()
+      
       next(new Error(err))
     })
 }
@@ -78,13 +78,13 @@ exports.getAllHeads = (req, res, next) => {
             })
           })
           .catch(err => {
-            res.end()
+            
             next(new Error(err))
           })
       }
     })
     .catch(err => {
-      res.end()
+      
       next(new Error(err))
     })
 }
@@ -137,13 +137,13 @@ exports.postTeamMembers = (req, res, next) => {
             })
           })
           .catch(err => {
-            res.end()
+            
             next(new Error(err))
           })
       }
     })
     .catch(err => {
-      res.end()
+      
       next(new Error(err))
     })
 }
@@ -196,13 +196,13 @@ exports.postAllHeads = (req, res, next) => {
             })
           })
           .catch(err => {
-            res.end()
+            
             next(new Error(err))
           })
       }
     })
     .catch(err => {
-      res.end()
+      
       next(new Error(err))
     })
 }
@@ -253,7 +253,7 @@ exports.postAssignTask = (req, res, next) => {
       return res.redirect('/associate/team-head/view-assigned-tasks/pending')
     })
     .catch(err => {
-      res.end()
+      
       next(new Error(err))
     })
 }
@@ -293,7 +293,7 @@ exports.postDismissTask = (req, res, next) => {
         return res.redirect('/associate/team-head/view-assigned-tasks/pending')
     })
     .catch(err => {
-      res.end()
+      
       next(new Error(err))
     })
 }
@@ -336,7 +336,7 @@ exports.postCompleteTask = (req, res, next) => {
       return res.redirect('/associate/team-head/my-tasks/completed')
     })
     .catch(err => {
-      res.end()
+      
       next(new Error(err))
     })
 }

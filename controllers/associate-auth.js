@@ -43,7 +43,6 @@ exports.postAssociateLogin = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.end()
       next(new Error(err))
     })
 }

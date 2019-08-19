@@ -45,7 +45,6 @@ exports.loginAuth = (req, res, next) => {
       return res.redirect('/teams')
     })
     .catch(err => {
-      res.end()
       next(new Error(err))
     })
 }
@@ -116,7 +115,6 @@ exports.postSignup = (req, res, next) => {
       return res.redirect('/login')
     })
     .catch(err => {
-      res.end()
       next(new Error(err))
     })
 }
