@@ -15,7 +15,7 @@ exports.getTeamMembers = (req, res, next) => {
   })
     .then(count => {
       if (count == 0) {
-        res.render('team-head/disp-team-members', {
+        return res.render('team-head/disp-team-members', {
           count: count,
           path: 'team-head/team-members'
         })
@@ -29,20 +29,20 @@ exports.getTeamMembers = (req, res, next) => {
           ]
         })
           .then(member => {
-            res.render('team-head/disp-team-members', {
+            return res.render('team-head/disp-team-members', {
               count: count,
               path: 'team-head/team-members',
               member: member
             })
           })
           .catch(err => {
-            console.log(err)
+            res.end()
             next(new Error(err))
           })
       }
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -57,7 +57,7 @@ exports.getAllHeads = (req, res, next) => {
   })
     .then(count => {
       if (count == 0) {
-        res.render('team-head/disp-team-members', {
+        return res.render('team-head/disp-team-members', {
           count: count,
           path: 'team-head/all-heads'
         })
@@ -71,20 +71,20 @@ exports.getAllHeads = (req, res, next) => {
           ]
         })
           .then(member => {
-            res.render('team-head/disp-team-members', {
+            return res.render('team-head/disp-team-members', {
               count: count,
               path: 'team-head/all-heads',
               member: member
             })
           })
           .catch(err => {
-            console.log(err)
+            res.end()
             next(new Error(err))
           })
       }
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -109,7 +109,7 @@ exports.postTeamMembers = (req, res, next) => {
   }) //counting the documents to display the cards in the template 
     .then(count => {
       if (count == 0) {
-        res.render('team-head/disp-team-members', {
+        return res.render('team-head/disp-team-members', {
           count: count,
           path: 'team-head/team-members',
         })
@@ -130,20 +130,20 @@ exports.postTeamMembers = (req, res, next) => {
           ]
         })
           .then(member => {
-            res.render('team-head/disp-team-members', {
+            return res.render('team-head/disp-team-members', {
               count: count,
               path: 'team-head/team-members',
               member: member
             })
           })
           .catch(err => {
-            console.log(err)
+            res.end()
             next(new Error(err))
           })
       }
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -168,7 +168,7 @@ exports.postAllHeads = (req, res, next) => {
   }) //counting the documents to display the cards in the template 
     .then(count => {
       if (count == 0) {
-        res.render('team-head/disp-team-members', {
+        return res.render('team-head/disp-team-members', {
           count: count,
           path: 'team-head/all-heads',
         })
@@ -189,26 +189,26 @@ exports.postAllHeads = (req, res, next) => {
           ]
         })
           .then(member => {
-            res.render('team-head/disp-team-members', {
+            return res.render('team-head/disp-team-members', {
               count: count,
               path: 'team-head/all-heads',
               member: member
             })
           })
           .catch(err => {
-            console.log(err)
+            res.end()
             next(new Error(err))
           })
       }
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
 
 exports.getAssignTaskForm = (req, res, next) => {
-  res.render('team-head/assign-task', {
+  return res.render('team-head/assign-task', {
     err: '',
     path: '',
     assignedToId: req.body.assignedToId,
@@ -250,10 +250,10 @@ exports.postAssignTask = (req, res, next) => {
     .then(task => {
       let socket = io.getIo()
       socket.emit('tasks',{action: 'create', assignedToId: req.body.assignedToId})
-      res.redirect('/associate/team-head/view-assigned-tasks/pending')
+      return res.redirect('/associate/team-head/view-assigned-tasks/pending')
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -265,14 +265,14 @@ exports.getAssignedTasks = (req, res, next) => {
   })
     .then(task => {
       if (req.params.status === 'pending') {
-        res.render('team-head/assigned-tasks', {
+        return res.render('team-head/assigned-tasks', {
           path: '/team-head/view-assigned-tasks/pending',
           task: task,
           date: new Date().toISOString().split("T")[0]
         })
       }
       if (req.params.status === 'completed') {
-        res.render('team-head/assigned-tasks', {
+        return res.render('team-head/assigned-tasks', {
           path: '/team-head/view-assigned-tasks/completed',
           task: task,
           date: new Date().toISOString().split("T")[0]
@@ -290,10 +290,10 @@ exports.postDismissTask = (req, res, next) => {
     .then(task => {
       let socket = io.getIo()
       socket.emit('tasks',{action: 'dismiss', assignedToId: req.body.assignedToId})
-        res.redirect('/associate/team-head/view-assigned-tasks/pending')
+        return res.redirect('/associate/team-head/view-assigned-tasks/pending')
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -305,14 +305,14 @@ exports.getMyTasks = (req, res, next) => {
   })
     .then(task => {
       if (req.params.status === 'pending') {
-        res.render('team-head/my-tasks', {
+        return res.render('team-head/my-tasks', {
           path: '/team-head/my-tasks/pending',
           task: task,
           date: new Date().toISOString().split("T")[0]
         })
       }
       if (req.params.status === 'completed') {
-        res.render('team-head/my-tasks', {
+        return res.render('team-head/my-tasks', {
           path: '/team-head/my-tasks/completed',
           task: task,
           date: new Date().toISOString().split("T")[0]
@@ -333,9 +333,10 @@ exports.postCompleteTask = (req, res, next) => {
     .then(task => {
       let socket = io.getIo()
       socket.emit('tasks',{action: 'complete', assigneeId: req.body.assigneeId})
-      res.redirect('/associate/team-head/my-tasks/completed')
+      return res.redirect('/associate/team-head/my-tasks/completed')
     })
     .catch(err => {
-      console.log(err)
+      res.end()
+      next(new Error(err))
     })
 }

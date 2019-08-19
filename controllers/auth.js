@@ -35,24 +35,24 @@ exports.loginAuth = (req, res, next) => {
         req.session.save()
       }
       else {
-        res.render('login', {
+        return res.render('login', {
           err: 'Invalid Password',
           errAss: null
         })
       }
     })
     .then(session => {
-      res.redirect('/teams')
+      return res.redirect('/teams')
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
 
 //login
 exports.getLogin = (req, res, next) => {
-  res.render('login', {
+  return res.render('login', {
     err: '',
     errAss: null
   })
@@ -61,13 +61,13 @@ exports.getLogin = (req, res, next) => {
 //logout
 exports.logout = (req, res, next) => {
   req.session.destroy(err => {
-    res.redirect('/login')
+    return res.redirect('/login')
   })
 }
 
 //signup
 exports.getSignUpForm = (req, res, next) => {
-  res.render('signup', {
+  return res.render('signup', {
     err: ''
   })
 }
@@ -113,10 +113,10 @@ exports.postSignup = (req, res, next) => {
       })
     })
     .then(() => {
-      res.redirect('/login')
+      return res.redirect('/login')
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }

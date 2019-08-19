@@ -30,7 +30,7 @@ const fileStorage = multer.diskStorage({ //for mongodb
   }
 })
 const store = new mongoDbStore({ //for connect-mongodb-session
-  uri: `${process.env.mongoString}`,
+  uri:`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@hr-management-vewvf.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`,
   collection: 'sessions'
 })
 const csrfProtection = csrf()
@@ -113,54 +113,46 @@ app.use((req, res, next) => { //to set response locals required to toggle compan
 app.use('/associate/team-head', teamHeadRoutes.routes)
 app.use('/associate/team-member', teamMemberRoutes.routes)
 
+app.get('/',(req,res,next)=>{
+  res.render('about')
+})
+
 //404
-app.use('/', (req, res, next) => {
+app.use((req, res, next) => {
   if (req.session.DMisLoggedIn) {
-    res.status(404)
-    res.render('404', { auth: 'DM' })
+    return res.render('404', { auth: 'DM' })
   }
-  if (req.session.TMisLoggedIn) {
-    res.status(404)
-    res.render('404', { auth: 'TM' })
+  else if (req.session.TMisLoggedIn) {
+    return res.render('404', { auth: 'TM' })
   }
-  if (req.session.THisLoggedIn) {
-    res.status(404)
-    res.render('404', { auth: 'TH' })
+  else if (req.session.THisLoggedIn) {
+    return res.render('404', { auth: 'TH' })
   }
   else {
-    res.status(404)
-    res.render('404', { auth: 'false' })
+    return res.render('404', { auth: 'false' })
   }
 })
 
 //500
-app.use('/', (error, req, res, next) => {
+app.use('/',(error, req, res, next) => {
   if (req.session.DMisLoggedIn) {
-    console.log(error)
-    res.status(500)
-    res.render('500', { auth: 'DM' })
+    return res.render('500', { auth: 'DM' })
   }
-  if (req.session.TMisLoggedIn) {
-    console.log(error)
-    res.status(500)
-    res.render('500', { auth: 'TM' })
+  else if (req.session.TMisLoggedIn) {
+    return res.render('500', { auth: 'TM' })
   }
-  if (req.session.THisLoggedIn) {
-    console.log(error)
-    res.status(500)
-    res.render('500', { auth: 'TH' })
+  else if (req.session.THisLoggedIn) {
+    return res.render('500', { auth: 'TH' })
   }
   else {
-    console.log(error)
-    res.status(500)
-    res.render('500', { auth: 'false' })
+    return res.render('500', { auth: 'false' })
   }
 })
 
 //connecting to mongoose database
-mongoose.connect(`${process.env.mongoString}`, { useNewUrlParser: true })
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@hr-management-vewvf.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`, { useNewUrlParser: true })
   .then(result => {
-    const server = app.listen(8080)
+    const server = app.listen(process.env.PORT || 8080)
     let io = require('./utils/socket').init(server)
   })
   .catch(err => {

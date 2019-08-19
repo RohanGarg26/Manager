@@ -9,6 +9,7 @@ const { validationResult } = require('express-validator')
 const Member = require('../model/member')
 const Team = require('../model/team')
 const Company = require('../model/company')
+const Task = require('../model/task')
 
 //for configuring mailing service
 const transporter = nodemailer.createTransport(sgTransport({
@@ -24,14 +25,19 @@ exports.postDeleteAccount = (req, res, next) => {
       return Team.deleteMany({ companyId: req.session.companyId })
     })
     .then(() => {
+      return Task.deleteMany({ companyId: req.session.companyId })
+    })
+    .then(() => {
       let id = new mongoose.Types.ObjectId(req.session.companyId)
       return Company.deleteOne({ _id: id })
     })
     .then(() => {
-      res.redirect('/logout')
+      req.session.destroy(err => {
+        return res.redirect('/login')
+      })
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -57,7 +63,7 @@ exports.getMember = (req, res, next) => {
     }) //counting the documents to display the cards in the template 
       .then(count => {
         if (count == 0) {
-          res.render('disp-all-members', { count: count, path: '/members' })
+          return res.render('disp-all-members', { count: count, path: '/members' })
         }
         else {
           Member.find({
@@ -73,16 +79,16 @@ exports.getMember = (req, res, next) => {
             ]
           })
             .then(member => {
-              res.render('disp-all-members', { count: count, member: member, path: '/members' })
+              return res.render('disp-all-members', { count: count, member: member, path: '/members' })
             })
             .catch(err => {
-              console.log(err)
+              res.end()
               next(new Error(err))
             })
         }
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -90,17 +96,17 @@ exports.getMember = (req, res, next) => {
     Member.countDocuments({ companyId: req.session.companyId })
       .then(count => {
         if (count == 0) {
-          res.render('disp-all-members', { count: count, path: '/members' })
+          return res.render('disp-all-members', { count: count, path: '/members' })
         }
         else {
           Member.find({ companyId: req.session.companyId })
             .then(member => {
-              res.render('disp-all-members', { count: count, member: member, path: '/members' })
+              return res.render('disp-all-members', { count: count, member: member, path: '/members' })
             })
         }
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -121,7 +127,7 @@ exports.postAddMember = (req, res, next) => {
         })
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -136,7 +142,7 @@ exports.postAddMember = (req, res, next) => {
         })
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -154,7 +160,7 @@ exports.postAddMember = (req, res, next) => {
               })
             })
             .catch(err => {
-              console.log(err)
+              res.end()
               next(new Error(err))
             })
         }
@@ -170,6 +176,7 @@ exports.postAddMember = (req, res, next) => {
           team: team
         })
           .catch(err => {
+            res.end()
             next(new Error(err))
           })
       })
@@ -250,10 +257,10 @@ exports.postAddMember = (req, res, next) => {
       })
     })
     .then(() => {
-      res.redirect('/members')
+      return res.redirect('/members')
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -263,10 +270,10 @@ exports.postAddMember = (req, res, next) => {
 exports.getAddMember = (req, res, next) => {
   Team.find({ companyId: req.session.companyId }) //finding teams that exist so that they can be selected in the form
     .then(team => {
-      res.render('add-member', { team: team, path: ' ', edit: 'false', err: '' })
+      return res.render('add-member', { team: team, path: ' ', edit: 'false', err: '' })
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -289,10 +296,10 @@ exports.getMemberDetails = (req, res, next) => {
       ]), member])
     })
     .then(([d, member]) => {
-      res.render('member-detail', { member: member, dob: d[0].dob })
+      return res.render('member-detail', { member: member, dob: d[0].dob })
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -325,7 +332,7 @@ exports.postAddTeam = (req, res, next) => {
   }, { versionKey: false })
     .save()
     .then(team => {
-      res.redirect('/teams')
+      return res.redirect('/teams')
     })
 }
 
@@ -339,7 +346,7 @@ exports.getTeamDetails = (req, res, next) => {
   })
     .then(count => {
       if (count == 0) {
-        res.render('disp-all-members', { count: count, path: '/members' })
+        return res.render('disp-all-members', { count: count, path: '/members' })
       }
       else if (count > 0) {
         Member.find({
@@ -349,20 +356,19 @@ exports.getTeamDetails = (req, res, next) => {
           ]
         })
           .then(member => {
-
-            res.render('disp-all-members', { count: count, member: member, path: '/members' })
+            return res.render('disp-all-members', { count: count, member: member, path: '/members' })
           })
       }
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
 
 //add-team
 exports.getAddTeam = (req, res, next) => {
-  res.render('add-team', { path: ' ', err: '' })
+  return res.render('add-team', { path: ' ', err: '' })
 }
 
 //delete-member
@@ -377,7 +383,7 @@ exports.deleteMem = (req, res, next) => {
       if (member.imageUrl) {
         if (member.imageUrl != 'images/default-member.png') {
           fs.unlink(member.imageUrl, (err) => {
-            console.log(err)
+            res.end()
             next(new Error(err))
           })
         }
@@ -390,10 +396,10 @@ exports.deleteMem = (req, res, next) => {
       })
     })
     .then(() => {
-      res.redirect('/members')
+      return res.redirect('/members')
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -425,7 +431,7 @@ exports.deleteTeam = (req, res, next) => {
       if (team.imageUrl) {
         if (team.imageUrl != 'images/default-team.png') {
           fs.unlink(team.imageUrl, (err) => {
-            console.log(err)
+            res.end()
             next(new Error(err))
           })
         }
@@ -438,10 +444,10 @@ exports.deleteTeam = (req, res, next) => {
       })
     })
     .then(() => {
-      res.redirect('/teams')
+      return res.redirect('/teams')
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -467,10 +473,10 @@ exports.getEditMember = (req, res, next) => {
       ]), member, team])
     })
     .then(([date, member, team]) => {
-      res.render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: '' })
+      return res.render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: '' })
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
@@ -500,10 +506,10 @@ exports.postEditMember = (req, res, next) => {
         ]), member, team])
       })
       .then(([date, member, team]) => {
-        res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: errors.array()[0].msg })
+        return res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: errors.array()[0].msg })
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -528,10 +534,10 @@ exports.postEditMember = (req, res, next) => {
         ]), member, team])
       })
       .then(([date, member, team]) => {
-        res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'Invalid date of birth.' })
+        return res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'Invalid date of birth.' })
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -559,7 +565,7 @@ exports.postEditMember = (req, res, next) => {
         res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'Member cannot be head of a team that does not exists.' })
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -588,10 +594,10 @@ exports.postEditMember = (req, res, next) => {
               ]), member, team])
             })
             .then(([date, member, team]) => {
-              res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'The selected team already has a Team Head' })
+              return res.status(422).render('add-member', { team: team, path: ' ', edit: 'true', member: member, date: date[0].dob, err: 'The selected team already has a Team Head' })
             })
             .catch(err => {
-              console.log(err)
+              res.end()
               next(new Error(err))
             })
         }
@@ -600,7 +606,7 @@ exports.postEditMember = (req, res, next) => {
 
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -619,7 +625,7 @@ exports.postEditMember = (req, res, next) => {
         if (member.imageUrl) {
           if (member.imageUrl != 'images/default-member.png') {
             fs.unlink(String(member.imageUrl), (err) => {
-              console.log(err)
+              res.end()
               next(new Error(err))
             })
           }
@@ -652,10 +658,10 @@ exports.postEditMember = (req, res, next) => {
         )
       })
       .then(() => {
-        res.redirect('/members')
+        return res.redirect('/members')
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -666,7 +672,7 @@ exports.postEditMember = (req, res, next) => {
         if (member.imageUrl) {
           if (member.imageUrl != 'images/default-member.png') {
             fs.unlink(String(member.imageUrl), (err) => {
-              console.log(err)
+              res.end()
               next(new Error(err))
             })
           }
@@ -691,10 +697,10 @@ exports.postEditMember = (req, res, next) => {
         )
       })
       .then(() => {
-        res.redirect('/members')
+        return res.redirect('/members')
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
 
@@ -713,7 +719,7 @@ exports.getTeam = (req, res, next) => {
     }).countDocuments()
       .then(count => {
         if (count == 0) {
-          res.render('disp-all-teams', { count: count, path: '/teams' })
+          return res.render('disp-all-teams', { count: count, path: '/teams' })
         }
         else {
           Team.find({
@@ -723,16 +729,16 @@ exports.getTeam = (req, res, next) => {
             ]
           })
             .then(team => {
-              res.render('disp-all-teams', { count: count, team: team, path: '/teams' })
+              return res.render('disp-all-teams', { count: count, team: team, path: '/teams' })
             })
             .catch(err => {
-              console.log(err)
+              res.end()
               next(new Error(err))
             })
         }
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }
@@ -740,21 +746,21 @@ exports.getTeam = (req, res, next) => {
     Team.countDocuments({ companyId: req.session.companyId })
       .then(count => {
         if (count == 0) {
-          res.render('disp-all-teams', { count: count, path: '/teams' })
+          return res.render('disp-all-teams', { count: count, path: '/teams' })
         }
         else {
           Team.find({ companyId: req.session.companyId })
             .then(team => {
-              res.render('disp-all-teams', { count: count, team: team, path: '/teams' })
+              return res.render('disp-all-teams', { count: count, team: team, path: '/teams' })
             })
             .catch(err => {
-              console.log(err)
+              res.end()
               next(new Error(err))
             })
         }
       })
       .catch(err => {
-        console.log(err)
+        res.end()
         next(new Error(err))
       })
   }

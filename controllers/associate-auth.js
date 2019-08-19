@@ -28,7 +28,7 @@ exports.postAssociateLogin = (req, res, next) => {
         req.session.save()
       }
       else {
-        res.render('login', {
+        return res.render('login', {
           errAss: 'Invalid Password',
           err: null
         })
@@ -36,20 +36,20 @@ exports.postAssociateLogin = (req, res, next) => {
     })
     .then(session => {
       if (req.session.member.teamHead === 'Yes') {
-        res.redirect('/associate/team-head/team-members')
+        return res.redirect('/associate/team-head/team-members')
       }
       else if (req.session.member.teamHead === 'No') {
-        res.redirect('/associate/team-member/tasks/pending')
+        return res.redirect('/associate/team-member/tasks/pending')
       }
     })
     .catch(err => {
-      console.log(err)
+      res.end()
       next(new Error(err))
     })
 }
 
 exports.logout = (req, res, next) => {
   req.session.destroy(err => {
-    res.redirect('/login')
+    return res.redirect('/login')
   })
 }

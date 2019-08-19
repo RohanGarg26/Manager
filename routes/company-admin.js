@@ -85,5 +85,4 @@ router.post('/add-team', authMiddleware.isAuth, [ //validations
 
 router.post('/delete-account', authMiddleware.isAuth, adminController.postDeleteAccount)
 
-
 exports.routes = router

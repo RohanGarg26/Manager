@@ -1,13 +1,17 @@
 {
-  "name": "myproject",
+  "name": "manager",
   "version": "1.0.0",
-  "description": "",
+  "description": "This aims to resolve the problem of task management in various organizations.",
   "main": "app.js",
+  "engines": {
+    "node": "10.15.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "start:dev": "nodemon app.js"
   },
-  "author": "",
+  "author": "Rohan Garg",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.19.1"
